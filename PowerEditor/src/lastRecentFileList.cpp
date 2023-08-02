@@ -20,6 +20,10 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
+/*
+  initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
+ _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
+*/
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
 	if (doSubMenu)
@@ -42,10 +46,14 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 		_idFreeArray[i] = true;
 }
 
-
+/*
+switchMode is only called once in scr folder: in NppBigSwitch.cpp
+call to switchMode() is followed by call to updateMenu(), defined lower ; 
+calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
+*/
 void LastRecentFileList::switchMode()
 {
-	//Remove all menu items
+	//Remove all menu items that are commands (including recent files ) for recent file history 
 	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
@@ -54,21 +62,50 @@ void LastRecentFileList::switchMode()
 	{
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
+	// see also menuCmdID.h , at: // 0 based position of command "Exit", to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
 
-	if (_hParentMenu == NULL) // mode main menu
-	{	if (_size > 0)
+	if (_hParentMenu == NULL) // mode main menu (recent files - also in file-menu); thus _hMenu points to file-menu
+	{	
+		/*
+		// If _lrfl was empty, then in file-menu after "print now", have:		
+		-----------------			_posBase-1
+		Exit						_posBase
+		
+		// If _lrfl was not empty, then have:
+		-----------------			_posBase-1
+		-----------------			_posBase
+		-----------------			_posBase+1
+		Exit						_posBase+2
+		
+		*/
+		if (_size > 0) // remove 2 extra "bars", as authors call the "----" in menuCmdID.h 
 		{
+			// the first removal below makes the next bar take position _posBase
 			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
 			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
-		}
+		}		
 		// switch to sub-menu mode
 		_hParentMenu = _hMenu;
-		_hMenu = ::CreatePopupMenu();
-		::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);
+		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) and populated
+		
+		::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  ?? what's this line doing? isnt the new menu created by CreatePopupMenu() empty? 
 	}
-	else // mode sub-menu
+	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files
 	{
-		if (_size > 0)
+		/*
+		// If _lrfl was empty, then in file-menu after "print now", have:		
+		-----------------			_posBase-1
+		Exit						_posBase
+		
+		// If _lrfl was not empty, then have:
+		-----------------			_posBase-1
+		RecentFiles ->				_posBase
+		-----------------			_posBase+1
+		Exit						_posBase+2
+		
+		*/
+		
+		if (_size > 0)//remove "RecentFiles ->" and 1 extra bar
 		{
 			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
 			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
@@ -78,7 +115,12 @@ void LastRecentFileList::switchMode()
 		_hMenu = _hParentMenu;
 		_hParentMenu = NULL;
 	}
-	_hasSeparators = false;
+	_hasSeparators = false; // I think by "separators" it's meant whatever extra menu items + bars between: the bar after Print-now, and Exit.
+	/*
+	Now in file-menu after "print now", have:		
+	-----------------			_posBase-1
+	Exit						_posBase
+	*/
 }
 
 void LastRecentFileList::updateMenu()
