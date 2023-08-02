@@ -69,13 +69,13 @@ void LastRecentFileList::switchMode()
 		/*
 		// If _lrfl was empty, then in file-menu after "print now", have:		
 		-----------------			_posBase-1
-		Exit					_posBase
+		Exit						_posBase
 		
 		// If _lrfl was not empty, then have:
 		-----------------			_posBase-1
 		-----------------			_posBase
 		-----------------			_posBase+1
-		Exit					_posBase+2
+		Exit						_posBase+2
 		
 		*/
 		if (_size > 0) // remove 2 extra "bars", as authors call the "----" in menuCmdID.h 
@@ -95,13 +95,13 @@ void LastRecentFileList::switchMode()
 		/*
 		// If _lrfl was empty, then in file-menu after "print now", have:		
 		-----------------			_posBase-1
-		Exit					_posBase
+		Exit						_posBase
 		
 		// If _lrfl was not empty, then have:
 		-----------------			_posBase-1
 		RecentFiles ->				_posBase
 		-----------------			_posBase+1
-		Exit					_posBase+2
+		Exit						_posBase+2
 		
 		*/
 		
@@ -119,7 +119,7 @@ void LastRecentFileList::switchMode()
 	/*
 	Now in file-menu after "print now", have:		
 	-----------------			_posBase-1
-	Exit					_posBase
+	Exit						_posBase
 	*/
 }
 
