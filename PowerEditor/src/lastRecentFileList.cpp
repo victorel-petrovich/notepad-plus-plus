@@ -88,7 +88,7 @@ void LastRecentFileList::switchMode()
 		_hParentMenu = _hMenu;
 		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) and populated
 		
-		::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  ?? what's this line doing? isnt the new menu created by CreatePopupMenu() empty? 
+		//::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  ?? what's this line doing? isnt the new menu created by CreatePopupMenu() empty? 
 	}
 	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files
 	{
