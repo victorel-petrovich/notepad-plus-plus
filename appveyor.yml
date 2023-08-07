@@ -12,22 +12,22 @@ environment:
     - compiler: MSC
       platform: Win32
 
-    # - compiler: MSC
-      # platform: x64
+    - compiler: MSC
+      platform: x64
 
-    # - compiler: MSC
-      # platform: arm64
+    - compiler: MSC
+      platform: arm64
 
-    # - compiler: GCC
-      # platform: i686
+    - compiler: GCC
+      platform: i686
 
-    # - compiler: GCC
-      # platform: x86_64
+    - compiler: GCC
+      platform: x86_64
 
 configuration:
-    # - Release
+    - Release
     - Debug
-  
+
 before_build:
     - ps: |
         Write-Output "Build parameters:"
