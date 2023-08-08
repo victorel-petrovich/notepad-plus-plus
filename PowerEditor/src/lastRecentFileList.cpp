@@ -20,6 +20,8 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
+// not callers & not callees (in this file)
+
 /*
   initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
@@ -46,14 +48,32 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 		_idFreeArray[i] = true;
 }
 
+/* 
+called only in: NppBigSwitch.cpp, at: 
+case WM_CLOSE:
+*/
+void LastRecentFileList::saveLRFL()
+{
+	NppParameters& nppParams = NppParameters::getInstance();
+	if (nppParams.writeRecentFileHistorySettings(_userMax))
+	{
+		for (int i = _size - 1; i >= 0; i--)	//reverse order: so loading goes in correct order
+		{
+			nppParams.writeHistory(_lrfl.at(i)._name.c_str());
+		}
+	}
+}
+
 /*
 switchMode is only called once in scr folder: in NppBigSwitch.cpp
 call to switchMode() is followed by call to updateMenu(), defined lower ; 
 calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
+TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSwitch.cpp, 
+	to be same as with the other 4 functions in current file. 
 */
 void LastRecentFileList::switchMode()
 {
-	//Remove all menu items that are commands (including recent files ) for recent file history 
+	//Remove all recent file history menu items that are commands (including recent files )
 	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
@@ -62,7 +82,9 @@ void LastRecentFileList::switchMode()
 	{
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
-	// see also menuCmdID.h , at: // 0 based position of command "Exit", to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
+	// see also menuCmdID.h , at line: 
+		// 0 based position of command "Exit"
+	// to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
 
 	if (_hParentMenu == NULL) // mode main menu (recent files - also in file-menu); thus _hMenu points to file-menu
 	{	
@@ -78,7 +100,7 @@ void LastRecentFileList::switchMode()
 		Exit						_posBase+2
 		
 		*/
-		if (_size > 0) // remove 2 extra "bars", as authors call the "----" in menuCmdID.h 
+		if (_size > 0) // remove 2 extra "bars", as the "----" are called in menuCmdID.h 
 		{
 			// the first removal below makes the next bar take position _posBase
 			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
@@ -86,9 +108,9 @@ void LastRecentFileList::switchMode()
 		}		
 		// switch to sub-menu mode
 		_hParentMenu = _hMenu;
-		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) and populated
+		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) at _posBase, and populated
 		
-		//::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  unnecessary line, as tested in issue https://github.com/victorel-petrovich/notepad-plus-plus_lastRecentFileList.cpp/issues/3 
+		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line, tested . The new menu created by CreatePopupMenu() is already empty. 
 	}
 	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files
 	{
@@ -117,85 +139,13 @@ void LastRecentFileList::switchMode()
 	}
 	_hasSeparators = false; // I think by "separators" it's meant whatever extra menu items + bars between: the bar after Print-now, and Exit.
 	/*
-	Now in file-menu after "print now", have:		
+	Now in file-menu after "Print now", have:		
 	-----------------			_posBase-1
 	Exit						_posBase
 	*/
 }
 
-void LastRecentFileList::updateMenu()
-{
-	NppParameters& nppParam = NppParameters::getInstance();
-
-	if (!_hasSeparators && _size > 0) 
-	{	
-		//add separators
-		NativeLangSpeaker *pNativeLangSpeaker = nppParam.getNativeLangSpeaker();
-
-		generic_string recentFileList = pNativeLangSpeaker->getSubMenuEntryName("file-recentFiles");
-		generic_string openRecentClosedFile = pNativeLangSpeaker->getNativeLangMenuString(IDM_FILE_RESTORELASTCLOSEDFILE);
-		generic_string openAllFiles = pNativeLangSpeaker->getNativeLangMenuString(IDM_OPEN_ALL_RECENT_FILE);
-		generic_string cleanFileList = pNativeLangSpeaker->getNativeLangMenuString(IDM_CLEAN_RECENT_FILE_LIST);
-
-		if (recentFileList == TEXT(""))
-			recentFileList = TEXT("&Recent Files");
-		if (openRecentClosedFile == TEXT(""))
-			openRecentClosedFile = TEXT("Restore Recent Closed File");
-		if (openAllFiles == TEXT(""))
-			openAllFiles = TEXT("Open All Recent Files");
-		if (cleanFileList == TEXT(""))
-			cleanFileList = TEXT("Empty Recent Files List");
-
-		if (!isSubMenuMode())
-			::InsertMenu(_hMenu, _posBase + 0, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
-
-		::InsertMenu(_hMenu, _posBase + 1, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
-		::InsertMenu(_hMenu, _posBase + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
-		::InsertMenu(_hMenu, _posBase + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
-		::InsertMenu(_hMenu, _posBase + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
-		_hasSeparators = true;
-
-		if (isSubMenuMode())
-		{
-			::InsertMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION | MF_POPUP, reinterpret_cast<UINT_PTR>(_hMenu), (LPCTSTR)recentFileList.c_str());
-			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
-		}
-	}
-	else if (_hasSeparators && _size == 0) 	//remove separators
-	{
-		::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION);
-		::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
-		::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
-		::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-		::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION);
-		_hasSeparators = false;
-
-		if (isSubMenuMode())
-		{
-			// Remove "Recent Files" Entry and the separator from the main menu
-			::RemoveMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION);
-			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION);
-
-			// Remove the last left separator from the submenu
-			// ::RemoveMenu(_hMenu, 0, MF_BYPOSITION); // ?? This line appears unnecessary; the bar in submenu has been removed in line 170
-		}
-	}
-
-	_pAccelerator->updateFullMenu();
-
-	//Remove all menu items
-	for (int i = 0; i < _size; ++i) 
-	{
-		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
-	}
-	//Then readd them, so everything stays in sync
-	for (int j = 0; j < _size; ++j)
-	{
-		generic_string strBuffer(BuildMenuFileName(nppParam.getRecentFileCustomLength(), j, _lrfl.at(j)._name));
-		::InsertMenu(_hMenu, _posBase + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
-	}
-	
-}
+//callers but not callees
 
 void LastRecentFileList::add(const TCHAR *fn) 
 {
@@ -232,21 +182,6 @@ void LastRecentFileList::remove(const TCHAR *fn)
 		remove(index);
 }
 
-void LastRecentFileList::remove(size_t index) 
-{
-	if (_size == 0 || _locked)
-		return;
-	if (index < _lrfl.size())
-	{
-		::RemoveMenu(_hMenu, _lrfl.at(index)._id, MF_BYCOMMAND);
-		setAvailable(_lrfl.at(index)._id);
-		_lrfl.erase(_lrfl.begin() + index);
-		--_size;
-		updateMenu();
-	}
-}
-
-
 void LastRecentFileList::clear() 
 {
 	if (_size == 0)
@@ -262,26 +197,10 @@ void LastRecentFileList::clear()
 	updateMenu();
 }
 
-
-generic_string & LastRecentFileList::getItem(int id) 
-{
-	int i = 0;
-	for (; i < _size; ++i)
-	{
-		if (_lrfl.at(i)._id == id)
-			break;
-	}
-	if (i == _size)
-		i = 0;
-	return _lrfl.at(i)._name;	//if not found, return first
-}
-
-generic_string & LastRecentFileList::getIndex(int index)
-{
-	return _lrfl.at(index)._name;	//if not found, return first
-}
-
-
+/* 
+called only in: NppBigSwitch.cpp, at: 
+case NPPM_INTERNAL_SETTING_HISTORY_SIZE:
+*/
 void LastRecentFileList::setUserMaxNbLRF(int size)
 {
 	_userMax = size;
@@ -301,21 +220,192 @@ void LastRecentFileList::setUserMaxNbLRF(int size)
 	}
 }
 
+//callers and callees 
 
-
-void LastRecentFileList::saveLRFL()
+/*
+called by remove(fn) above, and by add(fn) above
+*/
+void LastRecentFileList::remove(size_t index) 
 {
-	NppParameters& nppParams = NppParameters::getInstance();
-	if (nppParams.writeRecentFileHistorySettings(_userMax))
+	if (_size == 0 || _locked)
+		return;
+	if (index < _lrfl.size())
 	{
-		for (int i = _size - 1; i >= 0; i--)	//reverse order: so loading goes in correct order
-		{
-			nppParams.writeHistory(_lrfl.at(i)._name.c_str());
-		}
+		::RemoveMenu(_hMenu, _lrfl.at(index)._id, MF_BYCOMMAND);
+		setAvailable(_lrfl.at(index)._id);
+		_lrfl.erase(_lrfl.begin() + index);
+		--_size;
+		updateMenu();
 	}
 }
 
 
+//not callers but callees (all the rest )
+
+/*
+updateMenu() has 3 main functions:
+- add missing LRFL menu items (when _size>0) 
+- remove unnecessary LRFL menu items (when _size==0)
+- update updates the menu filenames based on current _lrfl
+
+updateMenu() is called in 2 files only in src:
+- in NppBigSwitch.cpp, call to switchMode() is followed by call to updateMenu();  
+	calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH 
+- in current file, in 4 places:
+	LastRecentFileList::add(const TCHAR *fn) 
+	LastRecentFileList::remove(size_t index) 
+	LastRecentFileList::clear()
+	LastRecentFileList::setUserMaxNbLRF(int size)
+*/
+void LastRecentFileList::updateMenu()
+{
+	NppParameters& nppParam = NppParameters::getInstance();
+	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in file-menu, and, if submenu mode, also in sub-menu
+	{	
+		//add separators in the file-menu
+		
+		// preparation of the names for 4 separators items 
+		NativeLangSpeaker *pNativeLangSpeaker = nppParam.getNativeLangSpeaker();
+
+		generic_string recentFileList = pNativeLangSpeaker->getSubMenuEntryName("file-recentFiles");
+		generic_string openRecentClosedFile = pNativeLangSpeaker->getNativeLangMenuString(IDM_FILE_RESTORELASTCLOSEDFILE);
+		generic_string openAllFiles = pNativeLangSpeaker->getNativeLangMenuString(IDM_OPEN_ALL_RECENT_FILE);
+		generic_string cleanFileList = pNativeLangSpeaker->getNativeLangMenuString(IDM_CLEAN_RECENT_FILE_LIST);
+
+		if (recentFileList == TEXT(""))
+			recentFileList = TEXT("&Recent Files");
+		if (openRecentClosedFile == TEXT(""))
+			openRecentClosedFile = TEXT("Restore Recent Closed File");
+		if (openAllFiles == TEXT(""))
+			openAllFiles = TEXT("Open All Recent Files");
+		if (cleanFileList == TEXT(""))
+			cleanFileList = TEXT("Empty Recent Files List");
+
+		if (!isSubMenuMode())
+			::InsertMenu(_hMenu, _posBase + 0, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0); // a bar
+			/*
+			 Now in file-menu after "print now", have:		
+			 -----------------				_posBase-1
+			 -----------------				_posBase
+			 Exit							_posBase+1		
+			*/
+		else 
+		{
+			::InsertMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION | MF_POPUP, reinterpret_cast<UINT_PTR>(_hMenu), (LPCTSTR)recentFileList.c_str());
+			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
+			/*
+			 Now in file-menu after "print now", have:		
+			 -----------------				_posBase-1
+			 RecentFiles ->					_posBase
+			 -----------------				_posBase+1
+			 Exit							_posBase+2					
+			*/
+		}
+		// Now for both modes:
+		/*?
+		?? 
+		when in sub-menu mode, why specify "_posBase+1" and not "_posBase" for placing "Restore last closed file" item at the top of the submenu ? I'd think that _posBase, so that to be aligned with file-menu subentry "RecentFiles ->" ?  
+		I read this: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenua
+		*/
+		::InsertMenu(_hMenu, _posBase + 1, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
+		::InsertMenu(_hMenu, _posBase + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
+		::InsertMenu(_hMenu, _posBase + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
+		::InsertMenu(_hMenu, _posBase + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
+
+		_hasSeparators = true;
+	}
+	else if (_hasSeparators && _size == 0) 	//remove separators 
+	// ex, after clear(), and possibly after remove(), add(), setUserMaxNbLRF()
+	{
+		::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION);//  bar 3 in file-menu; nothing in sub-menu
+		::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
+		::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
+		::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
+		::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in file-menu ; bar 1 (the only) in sub-menu
+		_hasSeparators = false;
+
+		if (isSubMenuMode())
+		{
+			// Remove bar 2 and "Recent Files" Entry from the file-menu
+			::RemoveMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION);
+			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION);
+
+			// Remove the last left bar from the sub-menu
+			::RemoveMenu(_hMenu, 0, MF_BYPOSITION); // ???????????? there is no left bar there 
+		}
+	}
+
+	/* Note X
+	At this point, if _size>0, then in sub-menu, have these items:
+	RRCF			_posBase
+	OARF			_posBase+1
+	ERFL			_posBase+2
+	-------			_posBase+3			
+	1: filename1	_posBase+4
+	2: filename2	_posBase+5
+	....
+	Proof: 
+	if _size>0, then it must be that _hasSeparators==true (if it were false, then 1st branch of top-level if above would have made it true ). 
+	But, the only way for _hasSeparators to become true is as a result of that mentioned branch , because it is initialized in initMenu() as false, and there is _no other place_ in this file that changes it to true. 
+	
+	*/
+
+	_pAccelerator->updateFullMenu();
+
+	//Remove all menu recentFiles items
+	for (int i = 0; i < _size; ++i) 
+	{
+		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
+	}
+	//Then read them, so everything stays in sync
+	for (int j = 0; j < _size; ++j)
+	{
+		generic_string strBuffer(BuildMenuFileName(nppParam.getRecentFileCustomLength(), j, _lrfl.at(j)._name) );
+		::InsertMenu(_hMenu, _posBase + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
+		/*??
+		In case of sub-menu, how/why (_posBase+j) results in insertion at position after the 2 items: "empty recent files list" and bar, instead of at the top, because (_posBase) is position at the top of the sub-menu ? 
+		
+		According to Note X above , before this for-loop, if _size>0 ( and unless _pAccelerator->updateFullMenu(); does some tricks), in sub-menu have already next 4 items at top: (below I use abbreviations of the menu items)
+			RRCF			_posBase
+			OARF			_posBase+1
+			ERFL			_posBase+2
+			-------			_posBase+3
+			
+		If it was intended to placce after the last 2 items, then must have use (posBase+4+j). 
+		*/
+	}
+	
+}
+
+/*
+ get filename w/ given id; if no file has such id, return first filename 
+*/
+generic_string & LastRecentFileList::getItem(int id) 
+{
+	int i = 0;
+	for (; i < _size; ++i)
+	{
+		if (_lrfl.at(i)._id == id)
+			break;
+	}
+	if (i == _size)
+		i = 0;
+	return _lrfl.at(i)._name;	//if id not found, return first
+}
+
+/*
+ get name of file at given index; 
+*/
+generic_string & LastRecentFileList::getIndex(int index)
+{
+	return _lrfl.at(index)._name;	//if not found, return first // ?? I think it's wrong comment here .
+}
+
+//private methods
+
+/*
+get index of given filename; if not found => -1
+*/
 int LastRecentFileList::find(const TCHAR *fn)
 {
 	for (int i = 0; i < _size; ++i)
