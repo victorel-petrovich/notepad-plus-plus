@@ -88,7 +88,7 @@ void LastRecentFileList::switchMode()
 		_hParentMenu = _hMenu;
 		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) and populated
 		
-		//::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  ?? what's this line doing? isnt the new menu created by CreatePopupMenu() empty? 
+		//::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  unnecessary line, as tested in issue https://github.com/victorel-petrovich/notepad-plus-plus_lastRecentFileList.cpp/issues/3 
 	}
 	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files
 	{
@@ -177,7 +177,7 @@ void LastRecentFileList::updateMenu()
 			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION);
 
 			// Remove the last left separator from the submenu
-			::RemoveMenu(_hMenu, 0, MF_BYPOSITION);
+			// ::RemoveMenu(_hMenu, 0, MF_BYPOSITION); // ?? This line appears unnecessary; the bar in submenu has been removed in line 170
 		}
 	}
 
