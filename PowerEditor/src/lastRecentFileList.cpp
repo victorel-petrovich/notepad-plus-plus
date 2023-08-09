@@ -25,6 +25,10 @@
 /*
   initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
+
+ see also menuCmdID.h , at line: 
+	// 0 based position of command "Exit"
+ to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
@@ -68,6 +72,7 @@ void LastRecentFileList::saveLRFL()
 switchMode is only called once in scr folder: in NppBigSwitch.cpp
 call to switchMode() is followed by call to updateMenu(), defined lower ; 
 calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
+
 TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSwitch.cpp, 
 	to be same as with the other 4 functions in current file. 
 */
@@ -82,9 +87,6 @@ void LastRecentFileList::switchMode()
 	{
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
-	// see also menuCmdID.h , at line: 
-		// 0 based position of command "Exit"
-	// to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
 
 	if (_hParentMenu == NULL) // mode main menu (recent files - also in file-menu); thus _hMenu points to file-menu
 	{	
