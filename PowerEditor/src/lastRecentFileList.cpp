@@ -33,6 +33,13 @@
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
+	//me added for debugging
+	AllocConsole();
+	freopen("conin$","r",stdin);
+	freopen("conout$","w",stdout);
+	freopen("conout$","w",stderr);
+	printf("Debugging Window:\n");	
+	
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
@@ -191,11 +198,6 @@ void LastRecentFileList::remove(const TCHAR *fn)
 
 void LastRecentFileList::clear() 
 {
-	AllocConsole();
-	freopen("conin$","r",stdin);
-	freopen("conout$","w",stdout);
-	freopen("conout$","w",stderr);
-	//printf("Debugging Window:\n");	
 	std::cout << "from LastRecentFileList::clear()\n";
 	
 	if (_size == 0)
