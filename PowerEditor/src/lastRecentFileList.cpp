@@ -22,7 +22,6 @@
 
 //me: for prints to cmd
 #include <iostream>
-// #include "stdio.h"
 
 
 // not callers & not callees (in this file)
@@ -163,6 +162,8 @@ void LastRecentFileList::switchMode()
 
 void LastRecentFileList::add(const TCHAR *fn) 
 {
+	std::cout<<"in add()\n Expecting a window to pause till I press a key...\n";
+	system("pause") ;
 	if (_userMax == 0 || _locked)
 		return;
 
