@@ -184,6 +184,7 @@ void LastRecentFileList::remove(const TCHAR *fn)
 
 void LastRecentFileList::clear() 
 {
+	cout << "It's Foo's Bar!\n";
 	if (_size == 0)
 		return;
 
