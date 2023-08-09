@@ -20,6 +20,8 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
+#include <iostream> //me: for prints to cmd
+
 // not callers & not callees (in this file)
 
 /*
