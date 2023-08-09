@@ -22,7 +22,6 @@
 
 //me: for prints to cmd
 #include <iostream>
-#include "stdafx.h"
 
 // not callers & not callees (in this file)
 
