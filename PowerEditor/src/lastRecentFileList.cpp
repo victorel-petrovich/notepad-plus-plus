@@ -20,7 +20,7 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
-//me: for prints to cmd
+//me: for debug prints to console
 #include <iostream>
 
 
@@ -37,7 +37,8 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	freopen("conin$","r",stdin);
 	freopen("conout$","w",stdout);
 	freopen("conout$","w",stderr);
-	printf("Debugging Window:\n");	
+	printf("Debugging Window\n");	
+	printf("----------------\n");	
 	
 	if (doSubMenu)
 	{
@@ -84,7 +85,7 @@ TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSw
 */
 void LastRecentFileList::switchMode()
 {
-	std::cout << "from LastRecentFileList::switchMode()\n";
+	std::cout << "in switchMode()\n";
 	
 	//Remove all recent file history menu items that are commands (including recent files )
 	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
@@ -162,8 +163,6 @@ void LastRecentFileList::switchMode()
 
 void LastRecentFileList::add(const TCHAR *fn) 
 {
-	std::cout<<"in add()\n Expecting a window to pause till I press a key...\n";
-	system("pause") ;
 	if (_userMax == 0 || _locked)
 		return;
 
@@ -199,7 +198,7 @@ void LastRecentFileList::remove(const TCHAR *fn)
 
 void LastRecentFileList::clear() 
 {
-	std::cout << "from LastRecentFileList::clear()\n";
+	std::cout << "in clear()\n";
 	
 	if (_size == 0)
 		return;
@@ -276,6 +275,8 @@ updateMenu() is called in 2 files only in src:
 */
 void LastRecentFileList::updateMenu()
 {
+	std::cout<<"in updateMenu()\n";
+
 	NppParameters& nppParam = NppParameters::getInstance();
 	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in file-menu, and, if submenu mode, also in sub-menu
 	{	
