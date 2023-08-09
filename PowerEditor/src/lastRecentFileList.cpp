@@ -20,10 +20,6 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
-//me: for debug prints to console
-#include <iostream>
-
-
 // not callers & not callees (in this file)
 
 /*
@@ -32,14 +28,6 @@
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
-	//me added for debugging
-	AllocConsole();
-	freopen("conin$","r",stdin);
-	freopen("conout$","w",stdout);
-	freopen("conout$","w",stderr);
-	printf("Debugging Window\n");	
-	printf("----------------\n");	
-	
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
@@ -85,8 +73,6 @@ TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSw
 */
 void LastRecentFileList::switchMode()
 {
-	std::cout << "in switchMode()\n";
-	
 	//Remove all recent file history menu items that are commands (including recent files )
 	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
@@ -198,8 +184,6 @@ void LastRecentFileList::remove(const TCHAR *fn)
 
 void LastRecentFileList::clear() 
 {
-	std::cout << "in clear()\n";
-	
 	if (_size == 0)
 		return;
 
@@ -275,8 +259,6 @@ updateMenu() is called in 2 files only in src:
 */
 void LastRecentFileList::updateMenu()
 {
-	std::cout<<"in updateMenu()\n";
-
 	NppParameters& nppParam = NppParameters::getInstance();
 	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in file-menu, and, if submenu mode, also in sub-menu
 	{	
@@ -335,6 +317,32 @@ void LastRecentFileList::updateMenu()
 	else if (_hasSeparators && _size == 0) 	//remove separators 
 	// ex, after clear(), and possibly after remove(), add(), setUserMaxNbLRF()
 	{
+		/*
+		//If no submenu: 
+		 
+		*In file-menu after "print now", have:		
+		 -----------------				_posBase-1
+		 -----------------				_posBase
+		 RRCF							_posBase+1
+		 OARF							_posBase+2
+		 ERFL							_posBase+3
+		 -----------------				_posBase+4
+		 Exit							_posBase+5					
+		 
+		//If submenu: 
+		 
+		*In file-menu after "print now", have:		
+		 -----------------				_posBase-1
+		 RecentFiles ->					_posBase
+		 -----------------				_posBase+1
+		 Exit							_posBase+2					
+		 
+		*In sub-menu have:               ??????????need verify below numbers  
+		 RRCF							_posBase+1
+		 OARF							_posBase+2
+		 ERFL							_posBase+3
+		 -----------------				_posBase+4		 
+		*/		
 		::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION);//  bar 3 in file-menu; nothing in sub-menu
 		::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
 		::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
