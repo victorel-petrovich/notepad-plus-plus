@@ -20,7 +20,9 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
-#include <iostream> //me: for prints to cmd
+//me: for prints to cmd
+#include <iostream>
+#include "stdafx.h"
 
 // not callers & not callees (in this file)
 
@@ -75,6 +77,9 @@ TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSw
 */
 void LastRecentFileList::switchMode()
 {
+	std::cout << "from LastRecentFileList::switchMode()\n";
+	system("pause");
+	
 	//Remove all recent file history menu items that are commands (including recent files )
 	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
@@ -187,6 +192,8 @@ void LastRecentFileList::remove(const TCHAR *fn)
 void LastRecentFileList::clear() 
 {
 	std::cout << "from LastRecentFileList::clear()\n";
+	system("pause");
+	
 	if (_size == 0)
 		return;
 
