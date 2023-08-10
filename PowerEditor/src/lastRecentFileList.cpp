@@ -24,6 +24,8 @@
 // #include <iostream>
 // using std::cout;
 
+/*debug
+*/
 
 // not callers & not callees (in this file)
 
@@ -31,9 +33,12 @@
   initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
  
- see also menuCmdID.h , at line: 
+ see  menuCmdID.h  
+ IDM_FILE_EXIT=41011 (the id) 
+ * at line: 
 	// 0 based position of command "Exit"
- to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
+ * IDM_FILEMENU_EXISTCMDPOSITION = 22
+ also see what what positions, relative to 0 at top, should be when _lrfl is empty (_lrfl is the internal list of recent files)
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
@@ -42,8 +47,9 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	freopen("conin$","r",stdin);
 	freopen("conout$","w",stdout);
 	freopen("conout$","w",stderr);
-	printf("Debugging Window\n\n");	
 	//-----------------------------
+
+	printf("initMenu()\n\n" );
 	
 	if (doSubMenu)
 	{
@@ -64,10 +70,172 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	for (size_t i = 0 ; i < sizeof(_idFreeArray) ; ++i)
 		_idFreeArray[i] = true;
 	
-	printf("initMenu(), end:\n" );
-	printf("GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	/*debugs
+	*/
+	printf("\t _size=%d\n", _size );
+	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
 	printf("\n");
+	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	
+}
+
+/*
+switchMode is only called once in scr folder: in NppBigSwitch.cpp
+call to switchMode() is followed by call to updateMenu(), defined lower ; 
+calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
+
+TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSwitch.cpp, 
+	to be same as with the other 4 functions in current file. 
+*/
+void LastRecentFileList::switchMode()
+{
+	printf("switchMode()\n\n");
+	
+	//Remove all recent file history menu items that are commands (including recent files )
+	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
+	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
+	::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
+
+	for (int i = 0; i < _size; ++i)
+	{
+		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
+	}
+
+	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
+	{	
+		/*
+		// If _lrfl was empty, then in main-menu after "print now", should have:		
+		-----------------			_posBase-1
+		Exit						_posBase
+		
+		// If _lrfl was not empty, then have:
+		-----------------			_posBase-1
+		-----------------			_posBase
+		-----------------			_posBase+1
+		Exit						_posBase+2
+		
+		*/
+		/*debug
+		printf("switchMode(),if (_hParentMenu == NULL): \n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+		*/
+		if (_size > 0) // remove 2 extra "bars", as the "----" are called in menuCmdID.h 
+		{
+			// the first removal below makes the next bar take position _posBase
+			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
+			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
+		}		
+		// switch to sub-menu mode
+		_hParentMenu = _hMenu;
+		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
+		/*debug
+		printf("switchMode(),if (_hParentMenu == NULL), end BEFORE last line: \n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+		*/
+		
+		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line, tested . The new menu created by CreatePopupMenu() is already empty. 
+		/*debug
+		printf("switchMode(),if (_hParentMenu == NULL), end AFTER last line: \n\n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		*/
+		
+	}
+	else // mode sub-menu ; _hMenu points to sub-menu; _hParentMenu points to main-menu 
+	{
+		/*
+		// If _lrfl was empty, then in main-menu after "print now", should have:		
+		-----------------			_posBase-1
+		Exit						_posBase
+		
+		// If _lrfl was not empty, then should have:
+		-----------------			_posBase-1
+		RecentFiles ->				_posBase
+		-----------------			_posBase+1
+		Exit						_posBase+2
+		
+		*/
+
+		
+		/*debug
+		printf("switchMode(), else: \n\n");
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		printf("\n");
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		*/
+		
+		if (_size > 0)//remove "RecentFiles ->" and 1 extra bar
+		{
+			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
+			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
+		}
+		// switch to main menu mode
+		::DestroyMenu(_hMenu);
+		_hMenu = _hParentMenu;
+		_hParentMenu = NULL;
+
+		/*debug
+		printf("switchMode(), else, at end: \n");
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		*/
+		
+	}
+	_hasSeparators = false; // I think by "separators" it's meant whatever extra menu items + bars between: the bar after Print-now, and Exit.
+	/*
+	Now in main-menu after "Print now", have:		
+	-----------------			_posBase-1
+	Exit						_posBase
+	*/
+	
 }
 
 /* 
@@ -86,143 +254,13 @@ void LastRecentFileList::saveLRFL()
 	}
 }
 
-/*
-switchMode is only called once in scr folder: in NppBigSwitch.cpp
-call to switchMode() is followed by call to updateMenu(), defined lower ; 
-calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
-
-TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSwitch.cpp, 
-	to be same as with the other 4 functions in current file. 
-*/
-void LastRecentFileList::switchMode()
-{
-	//Remove all recent file history menu items that are commands (including recent files )
-	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
-	::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
-
-	for (int i = 0; i < _size; ++i)
-	{
-		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
-	}
-
-	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
-	{	
-		/*
-		// If _lrfl was empty, then in main-menu after "print now", have:		
-		-----------------			_posBase-1
-		Exit						_posBase
-		
-		// If _lrfl was not empty, then have:
-		-----------------			_posBase-1
-		-----------------			_posBase
-		-----------------			_posBase+1
-		Exit						_posBase+2
-		
-		*/
-		printf("switchMode(),if (_hParentMenu == NULL): \n" );
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-		printf("\n");
-
-		if (_size > 0) // remove 2 extra "bars", as the "----" are called in menuCmdID.h 
-		{
-			// the first removal below makes the next bar take position _posBase
-			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
-			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
-		}		
-		// switch to sub-menu mode
-		_hParentMenu = _hMenu;
-		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
-		
-		printf("switchMode(),if (_hParentMenu == NULL), end BEFORE last line: \n" );
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-		printf("\n");
-		
-		::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line, tested . The new menu created by CreatePopupMenu() is already empty. 
-		
-		printf("switchMode(),if (_hParentMenu == NULL), end AFTER last line: \n\n" );
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-		printf("\n");
-		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-		
-	}
-	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files; _hParentMenu points to main-menu 
-	{
-		/*
-		// If _lrfl was empty, then in main-menu after "print now", have:		
-		-----------------			_posBase-1
-		Exit						_posBase
-		
-		// If _lrfl was not empty, then have:
-		-----------------			_posBase-1
-		RecentFiles ->				_posBase
-		-----------------			_posBase+1
-		Exit						_posBase+2
-		
-		*/
-		printf("switchMode(), else: \n\n");
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-		printf("\n");
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-		
-		if (_size > 0)//remove "RecentFiles ->" and 1 extra bar
-		{
-			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
-			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
-		}
-		// switch to main menu mode
-		::DestroyMenu(_hMenu);
-		_hMenu = _hParentMenu;
-		_hParentMenu = NULL;
-
-		printf("switchMode(), else, at end: \n");
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-		
-	}
-	_hasSeparators = false; // I think by "separators" it's meant whatever extra menu items + bars between: the bar after Print-now, and Exit.
-	/*
-	Now in main-menu after "Print now", have:		
-	-----------------			_posBase-1
-	Exit						_posBase
-	*/
-}
 
 //callers but not callees
 
 void LastRecentFileList::add(const TCHAR *fn) 
 {
+	printf("add()\n\n" );
+	
 	if (_userMax == 0 || _locked)
 		return;
 
@@ -262,6 +300,8 @@ case IDM_CLEAN_RECENT_FILE_LIST :
 */
 void LastRecentFileList::clear() 
 {
+	printf("clear()\n\n" );
+	
 	if (_size == 0)
 		return;
 
@@ -305,6 +345,8 @@ called by remove(fn) above, and by add(fn) above
 */
 void LastRecentFileList::remove(size_t index) 
 {
+	printf("remove(size_t index)\n\n" );
+	
 	if (_size == 0 || _locked)
 		return;
 	if (index < _lrfl.size())
@@ -327,8 +369,11 @@ updateMenu() has 3 main functions:
 - update updates the menu filenames based on current _lrfl
 
 updateMenu() is called in 2 files only in src:
-- in NppBigSwitch.cpp, call to switchMode() is followed by call to updateMenu();  
-	calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH 
+- in NppBigSwitch.cpp in process(...), switch(message):
+	case NPPM_INTERNAL_RECENTFILELIST_UPDATE:
+		call to updateMenu() alone
+	case NPPM_INTERNAL_RECENTFILELIST_SWITCH:
+		call to switchMode() is followed by call to updateMenu();  
 - in current file, in 4 places:
 	LastRecentFileList::add(const TCHAR *fn) 
 	LastRecentFileList::remove(size_t index) 
@@ -337,7 +382,9 @@ updateMenu() is called in 2 files only in src:
 */
 void LastRecentFileList::updateMenu()
 {
-	printf("\nupdateMenu()\n" );
+		/*debug
+		*/
+	printf("updateMenu()\n\n" );
 
 	NppParameters& nppParam = NppParameters::getInstance();
 	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in main-menu, and, if submenu mode, also in sub-menu
@@ -361,7 +408,7 @@ void LastRecentFileList::updateMenu()
 		if (cleanFileList == TEXT(""))
 			cleanFileList = TEXT("Empty Recent Files List");
 
-		int deltaPosRRCF; // my add; so that (_posBase+deltaPosRRCF) will be position where will insert RRCF, "Restore Recent Closed File"
+		int deltaPosRRCF; // my add; for testing diff values in sub-menu vs main-menu  so that (_posBase+deltaPosRRCF) will be position where will insert RRCF, "Restore Recent Closed File"
 		
 		if (!isSubMenuMode())
 		{
