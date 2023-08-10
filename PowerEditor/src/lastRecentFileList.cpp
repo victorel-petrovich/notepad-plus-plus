@@ -30,9 +30,10 @@
 // not callers & not callees (in this file)
 
 /*
-  initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
+  initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp, inside init(...), line 580:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
- 
+	and is followed by calls to add() (from this file) to add RFH file items to menu 
+	
  see  menuCmdID.h  
  IDM_FILE_EXIT=41011 (the id) 
  * at line: 
@@ -257,6 +258,15 @@ void LastRecentFileList::saveLRFL()
 
 //callers but not callees
 
+/*
+ add(..) called in:
+- Notepad_plus.cpp , right after initMenu(..), to add RFH files to menu 
+	Line  587
+- NppIO.cpp:
+	- at closing a doc(tab): Line  830
+	- in fileSaveAs(..) Line 1812
+	
+*/
 void LastRecentFileList::add(const TCHAR *fn) 
 {
 	printf("add()\n\n" );
@@ -285,6 +295,28 @@ void LastRecentFileList::add(const TCHAR *fn)
 	}
 	_lrfl.push_front(itemToAdd);
 	updateMenu();
+	/*debugs
+	*/
+	printf("add() at end: \n\n" );	
+	printf("\t _size=%d\n", _size );
+	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
+	printf("\n");
+	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	
 }
 
 void LastRecentFileList::remove(const TCHAR *fn) 
