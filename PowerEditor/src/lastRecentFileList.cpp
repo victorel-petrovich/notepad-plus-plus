@@ -553,7 +553,7 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
 	printf("\n");
-	char lpString[50]; int nchars;
+	LPSTR lpString[50]; int nchars;
 	nchars= GetMenuString(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
 	printf("GetMenuString(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
 	nchars= GetMenuString(_hMenu, _posBase+0, lpString,  49,  MF_BYPOSITION);
