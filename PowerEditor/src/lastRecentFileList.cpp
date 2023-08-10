@@ -361,6 +361,8 @@ void LastRecentFileList::updateMenu()
 		if (cleanFileList == TEXT(""))
 			cleanFileList = TEXT("Empty Recent Files List");
 
+		int deltaPosRRCF; // my add; so that (_posBase+deltaPosRRCF) will be position where will insert RRCF, "Restore Recent Closed File"
+		
 		if (!isSubMenuMode())
 		{
 			// printf("updateMenu(), if (!isSubMenuMode()), BEFORE insert bar, GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -373,7 +375,7 @@ void LastRecentFileList::updateMenu()
 			 -----------------				_posBase
 			 Exit							_posBase+1		
 			*/
-			int deltaPosRRCF=1; // my add; so that (_posBase+deltaPosRRCF) will be position in main-menu where will insert RRCF, "Restore Recent Closed File"
+			deltaPosRRCF=1; 
 		}
 		else 
 		{
@@ -390,7 +392,7 @@ void LastRecentFileList::updateMenu()
 			 -----------------				_posBase+1
 			 Exit							_posBase+2					
 			*/
-			int deltaPosRRCF=1; // my add; plan to make it 0; so that (_posBase+deltaPosRRCF) will be position in sub-menu where will insert RRCF, "Restore Recent Closed File"
+			deltaPosRRCF=1;
 		}
 		// Now for both modes:
 		/*
