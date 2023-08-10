@@ -552,28 +552,6 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
-	printf("\n");
-	char lpString[50]; int nchars;
-	nchars= GetMenuStringA(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+0, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+0,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+1, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+1,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+2, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+2,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+3, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+3,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+4, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+4,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+5, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+5,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+6, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+6,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+7, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+7,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hMenu, _posBase+8, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hMenu, _posBase+8,...)=%s; nchars=%d\n", lpString, nchars);
 	printf("\n");	
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -587,27 +565,10 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
-	nchars= GetMenuStringA(_hParentMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+0, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+0,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+1, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+1,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+2, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+2,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+3, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+3,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+4, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+4,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+5, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+5,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+6, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+6,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+7, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+7,...)=%s; nchars=%d\n", lpString, nchars);
-	nchars= GetMenuStringA(_hParentMenu, _posBase+8, lpString,  49,  MF_BYPOSITION);
-	printf("GetMenuStringA(_hParentMenu, _posBase+8,...)=%s; nchars=%d\n", lpString, nchars);
-	printf("\n");
+	//I tried get string names, but just like w/ GetMenuItemID, only works in main-menu.
+	// char lpString[50]; int nchars;
+	// nchars= GetMenuStringA(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
+	// printf("GetMenuStringA(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
 	
 }
 
