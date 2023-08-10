@@ -21,24 +21,25 @@
 #include "localization.h"
 
 //me added for debug prints; but can use printf() wihtou including anything here. 
-// #include <iostream>
-// using std::cout;
+#include <iostream>
+using std::cout;
 
 /*debug
 */
 
 // not callers & not callees (in this file)
 
-/*
+/*+
   initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp, inside init(...), line 580:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
 	and is followed by calls to add() (from this file) to add RFH file items to menu 
 	
  see  menuCmdID.h  
  IDM_FILE_EXIT=41011 (the id) 
+ IDM_FILEMENU_LASTONE + 1 = 41026 (first id to be given for a recent filename)
  * at line: 
 	// 0 based position of command "Exit"
- * IDM_FILEMENU_EXISTCMDPOSITION = 22
+ IDM_FILEMENU_EXISTCMDPOSITION = 22
  also see what what positions, relative to 0 at top, should be when _lrfl is empty (_lrfl is the internal list of recent files)
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
@@ -76,6 +77,7 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );	
+	printf("\n");
 }
 
 /*
@@ -223,7 +225,7 @@ void LastRecentFileList::switchMode()
 	
 }
 
-/* 
+/*+ 
 called only in: NppBigSwitch.cpp, at: 
 case WM_CLOSE:
 */
@@ -278,35 +280,8 @@ void LastRecentFileList::add(const TCHAR *fn)
 		++_size;
 	}
 	_lrfl.push_front(itemToAdd);
-	updateMenu();
-	/*debugs
-	*/
-	printf("add() at end: \n\n" );	
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%u\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%u\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%u\n", GetMenuItemID(_hMenu, _posBase+8) );
-	printf("\n");
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%u\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%u\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%u\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	
+	updateMenu();
 }
 
 void LastRecentFileList::remove(const TCHAR *fn) 
@@ -334,6 +309,7 @@ void LastRecentFileList::clear()
 		_lrfl.erase(_lrfl.begin() + i);
 	}
 	_size = 0;
+
 	updateMenu();
 }
 
@@ -560,7 +536,78 @@ void LastRecentFileList::updateMenu()
 		If it was intended to placce after the last 2 items, then must have use (posBase+4+j). 
 		*/
 	}
-	
+	/*debugs
+	*/
+	// printf("update() at end: \n\n" );	
+	printf("\t _size=%d\n", _size );
+	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%u\n", GetMenuItemID(_hMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%u\n", GetMenuItemID(_hMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%u\n", GetMenuItemID(_hMenu, _posBase+8) );
+	printf("\n");
+	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+	printf("\n");
+	cout<<"\t GetMenuItemID(_hMenu, _posBase-1)="<< GetMenuItemID(_hMenu, _posBase-1)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+0)="<< GetMenuItemID(_hMenu, _posBase+0)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+1)="<< GetMenuItemID(_hMenu, _posBase+1)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+2)="<< GetMenuItemID(_hMenu, _posBase+2)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+3)="<< GetMenuItemID(_hMenu, _posBase+3)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+4)="<< GetMenuItemID(_hMenu, _posBase+4)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+5)="<< GetMenuItemID(_hMenu, _posBase+5)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+6)="<< GetMenuItemID(_hMenu, _posBase+6)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+7)="<< GetMenuItemID(_hMenu, _posBase+7)<<"\n";
+	cout<<"\t GetMenuItemID(_hMenu, _posBase+8)="<< GetMenuItemID(_hMenu, _posBase+8)<<"\n";
+	printf("\n");
+	printf("\n");
+	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%u\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%u\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%u\n", GetMenuItemID(_hParentMenu, _posBase+8) );
+	printf("\n");
+	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
+	printf("\n");
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase-1)="<< GetMenuItemID(_hParentMenu, _posBase-1)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+0)="<< GetMenuItemID(_hParentMenu, _posBase+0)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+1)="<< GetMenuItemID(_hParentMenu, _posBase+1)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+2)="<< GetMenuItemID(_hParentMenu, _posBase+2)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+3)="<< GetMenuItemID(_hParentMenu, _posBase+3)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+4)="<< GetMenuItemID(_hParentMenu, _posBase+4)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+5)="<< GetMenuItemID(_hParentMenu, _posBase+5)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+6)="<< GetMenuItemID(_hParentMenu, _posBase+6)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+7)="<< GetMenuItemID(_hParentMenu, _posBase+7)<<"\n";
+	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+8)="<< GetMenuItemID(_hParentMenu, _posBase+8)<<"\n";	
 }
 
 /*
