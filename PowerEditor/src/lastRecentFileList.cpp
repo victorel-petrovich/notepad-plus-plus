@@ -21,8 +21,8 @@
 #include "localization.h"
 
 //me added for debug prints; but can use printf() wihtou including anything here. 
-#include <iostream>
-using std::cout;
+// #include <iostream>
+// using std::cout;
 
 /*debug
 */
@@ -353,6 +353,7 @@ void LastRecentFileList::remove(size_t index)
 		setAvailable(_lrfl.at(index)._id);
 		_lrfl.erase(_lrfl.begin() + index);
 		--_size;
+	
 		updateMenu();
 	}
 }
@@ -380,8 +381,8 @@ updateMenu() is called in 2 files only in src:
 */
 void LastRecentFileList::updateMenu()
 {
-		/*debug
-		*/
+	/*debug
+	*/
 	printf("updateMenu()\n\n" );
 
 	NppParameters& nppParam = NppParameters::getInstance();
@@ -541,17 +542,6 @@ void LastRecentFileList::updateMenu()
 	// printf("update() at end: \n\n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%u\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%u\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%u\n", GetMenuItemID(_hMenu, _posBase+8) );
-	printf("\n");
 	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
@@ -563,30 +553,29 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
 	printf("\n");
-	cout<<"\t GetMenuItemID(_hMenu, _posBase-1)="<< GetMenuItemID(_hMenu, _posBase-1)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+0)="<< GetMenuItemID(_hMenu, _posBase+0)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+1)="<< GetMenuItemID(_hMenu, _posBase+1)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+2)="<< GetMenuItemID(_hMenu, _posBase+2)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+3)="<< GetMenuItemID(_hMenu, _posBase+3)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+4)="<< GetMenuItemID(_hMenu, _posBase+4)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+5)="<< GetMenuItemID(_hMenu, _posBase+5)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+6)="<< GetMenuItemID(_hMenu, _posBase+6)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+7)="<< GetMenuItemID(_hMenu, _posBase+7)<<"\n";
-	cout<<"\t GetMenuItemID(_hMenu, _posBase+8)="<< GetMenuItemID(_hMenu, _posBase+8)<<"\n";
-	printf("\n");
-	printf("\n");
+	LPSTR lpString[50]; int nchars
+	nchars= GetMenuString(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+0, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+0,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+1, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+1,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+2, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+2,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+3, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+3,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+4, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+4,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+5, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+5,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+6, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+6,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+7, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+7,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hMenu, _posBase+8, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hMenu, _posBase+8,...)=%s; nchars=%d\n", lpString, nchars);
+	printf("\n");	
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%u\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%u\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%u\n", GetMenuItemID(_hParentMenu, _posBase+8) );
-	printf("\n");
 	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
@@ -598,19 +587,31 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase-1)="<< GetMenuItemID(_hParentMenu, _posBase-1)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+0)="<< GetMenuItemID(_hParentMenu, _posBase+0)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+1)="<< GetMenuItemID(_hParentMenu, _posBase+1)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+2)="<< GetMenuItemID(_hParentMenu, _posBase+2)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+3)="<< GetMenuItemID(_hParentMenu, _posBase+3)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+4)="<< GetMenuItemID(_hParentMenu, _posBase+4)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+5)="<< GetMenuItemID(_hParentMenu, _posBase+5)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+6)="<< GetMenuItemID(_hParentMenu, _posBase+6)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+7)="<< GetMenuItemID(_hParentMenu, _posBase+7)<<"\n";
-	cout<<"\t GetMenuItemID(_hParentMenu, _posBase+8)="<< GetMenuItemID(_hParentMenu, _posBase+8)<<"\n";	
+	nchars= GetMenuString(_hParentMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+0, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+0,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+1, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+1,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+2, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+2,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+3, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+3,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+4, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+4,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+5, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+5,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+6, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+6,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+7, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+7,...)=%s; nchars=%d\n", lpString, nchars);
+	nchars= GetMenuString(_hParentMenu, _posBase+8, lpString,  49,  MF_BYPOSITION);
+	printf("GetMenuString(_hParentMenu, _posBase+8,...)=%s; nchars=%d\n", lpString, nchars);
+	printf("\n");
+	
 }
 
-/*
+/*+
  get filename w/ given id; if no file has such id, return first filename 
 */
 generic_string & LastRecentFileList::getItem(int id) 
@@ -626,17 +627,17 @@ generic_string & LastRecentFileList::getItem(int id)
 	return _lrfl.at(i)._name;	//if id not found, return first
 }
 
-/*
+/*+
  get name of file at given index; 
 */
 generic_string & LastRecentFileList::getIndex(int index)
 {
-	return _lrfl.at(index)._name;	//if not found, return first // ?? I think it's wrong comment here .
+	return _lrfl.at(index)._name;
 }
 
 //private methods
 
-/*
+/*+
 get index of given filename; if not found => -1
 */
 int LastRecentFileList::find(const TCHAR *fn)
@@ -651,6 +652,7 @@ int LastRecentFileList::find(const TCHAR *fn)
 	return -1;
 }
 
+//+
 int LastRecentFileList::popFirstAvailableID() 
 {
 	for (int i = 0 ; i < NB_MAX_LRF_FILE ; ++i)
@@ -664,6 +666,7 @@ int LastRecentFileList::popFirstAvailableID()
 	return 0;
 }
 
+//+
 void LastRecentFileList::setAvailable(int id)
 {
 	int index = id - _idBase;
