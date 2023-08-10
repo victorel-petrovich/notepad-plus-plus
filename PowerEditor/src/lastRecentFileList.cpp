@@ -20,18 +20,31 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
+//me added for debug prints; but can use printf() wihtou including anything here. 
+// #include <iostream>
+// using std::cout;
+
+
 // not callers & not callees (in this file)
 
 /*
   initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp as:
  _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
-
+ 
  see also menuCmdID.h , at line: 
 	// 0 based position of command "Exit"
  to see what what positions should be when _lrfl is empty (_lrfl is the internal list of recent files)
 */
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
+	//me added for debug prints
+	AllocConsole();
+	freopen("conin$","r",stdin);
+	freopen("conout$","w",stdout);
+	freopen("conout$","w",stderr);
+	printf("Debugging Window\n\n");	
+	//-----------------------------
+	
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
@@ -50,6 +63,11 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 
 	for (size_t i = 0 ; i < sizeof(_idFreeArray) ; ++i)
 		_idFreeArray[i] = true;
+	
+	printf("initMenu(), end:\n" );
+	printf("GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+	printf("GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	printf("\n");
 }
 
 /* 
@@ -88,10 +106,10 @@ void LastRecentFileList::switchMode()
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
 
-	if (_hParentMenu == NULL) // mode main menu (recent files - also in file-menu); thus _hMenu points to file-menu
+	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
 	{	
 		/*
-		// If _lrfl was empty, then in file-menu after "print now", have:		
+		// If _lrfl was empty, then in main-menu after "print now", have:		
 		-----------------			_posBase-1
 		Exit						_posBase
 		
@@ -102,6 +120,15 @@ void LastRecentFileList::switchMode()
 		Exit						_posBase+2
 		
 		*/
+		printf("switchMode(),if (_hParentMenu == NULL): \n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+
 		if (_size > 0) // remove 2 extra "bars", as the "----" are called in menuCmdID.h 
 		{
 			// the first removal below makes the next bar take position _posBase
@@ -110,14 +137,38 @@ void LastRecentFileList::switchMode()
 		}		
 		// switch to sub-menu mode
 		_hParentMenu = _hMenu;
-		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(file-menu) at _posBase, and populated
+		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
 		
-		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line, tested . The new menu created by CreatePopupMenu() is already empty. 
+		printf("switchMode(),if (_hParentMenu == NULL), end BEFORE last line: \n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+		
+		::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line, tested . The new menu created by CreatePopupMenu() is already empty. 
+		
+		printf("switchMode(),if (_hParentMenu == NULL), end AFTER last line: \n\n" );
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\n");
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		
 	}
-	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files
+	else // mode sub-menu ; _hMenu points to sub-menu w/ recent files; _hParentMenu points to main-menu 
 	{
 		/*
-		// If _lrfl was empty, then in file-menu after "print now", have:		
+		// If _lrfl was empty, then in main-menu after "print now", have:		
 		-----------------			_posBase-1
 		Exit						_posBase
 		
@@ -128,6 +179,19 @@ void LastRecentFileList::switchMode()
 		Exit						_posBase+2
 		
 		*/
+		printf("switchMode(), else: \n\n");
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		printf("\n");
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
 		
 		if (_size > 0)//remove "RecentFiles ->" and 1 extra bar
 		{
@@ -138,10 +202,18 @@ void LastRecentFileList::switchMode()
 		::DestroyMenu(_hMenu);
 		_hMenu = _hParentMenu;
 		_hParentMenu = NULL;
+
+		printf("switchMode(), else, at end: \n");
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
+		
 	}
 	_hasSeparators = false; // I think by "separators" it's meant whatever extra menu items + bars between: the bar after Print-now, and Exit.
 	/*
-	Now in file-menu after "Print now", have:		
+	Now in main-menu after "Print now", have:		
 	-----------------			_posBase-1
 	Exit						_posBase
 	*/
@@ -184,6 +256,10 @@ void LastRecentFileList::remove(const TCHAR *fn)
 		remove(index);
 }
 
+/*
+called in NppCommands.cpp at:
+case IDM_CLEAN_RECENT_FILE_LIST :
+*/
 void LastRecentFileList::clear() 
 {
 	if (_size == 0)
@@ -261,10 +337,12 @@ updateMenu() is called in 2 files only in src:
 */
 void LastRecentFileList::updateMenu()
 {
+	printf("\nupdateMenu()\n" );
+
 	NppParameters& nppParam = NppParameters::getInstance();
-	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in file-menu, and, if submenu mode, also in sub-menu
+	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in main-menu, and, if submenu mode, also in sub-menu
 	{	
-		//add separators in the file-menu
+		//add separators in the main-menu
 		
 		// preparation of the names for 4 separators items 
 		NativeLangSpeaker *pNativeLangSpeaker = nppParam.getNativeLangSpeaker();
@@ -284,35 +362,44 @@ void LastRecentFileList::updateMenu()
 			cleanFileList = TEXT("Empty Recent Files List");
 
 		if (!isSubMenuMode())
+		{
+			// printf("updateMenu(), if (!isSubMenuMode()), BEFORE insert bar, GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
 			::InsertMenu(_hMenu, _posBase + 0, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0); // a bar
+			// printf("updateMenu(), if (!isSubMenuMode()), AFTER insert bar, GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+			
 			/*
-			 Now in file-menu after "print now", have:		
+			 Now in main-menu after "print now", have:		
 			 -----------------				_posBase-1
 			 -----------------				_posBase
 			 Exit							_posBase+1		
 			*/
+			int deltaPosRRCF=1; // my add; so that (_posBase+deltaPosRRCF) will be position in main-menu where will insert RRCF, "Restore Recent Closed File"
+		}
 		else 
 		{
+			// printf("updateMenu(), if ( isSubMenuMode()), BEFORE insert \"Recent Files\" and bar, GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+			
 			::InsertMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION | MF_POPUP, reinterpret_cast<UINT_PTR>(_hMenu), (LPCTSTR)recentFileList.c_str());
 			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
+			
+			// printf("updateMenu(), if (!isSubMenuMode()), AFTER insert \"Recent Files\" and bar, GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
 			/*
-			 Now in file-menu after "print now", have:		
+			 Now in main-menu after "print now", have:		
 			 -----------------				_posBase-1
 			 RecentFiles ->					_posBase
 			 -----------------				_posBase+1
 			 Exit							_posBase+2					
 			*/
+			int deltaPosRRCF=1; // my add; plan to make it 0; so that (_posBase+deltaPosRRCF) will be position in sub-menu where will insert RRCF, "Restore Recent Closed File"
 		}
 		// Now for both modes:
-		/*?
-		?? 
-		when in sub-menu mode, why specify "_posBase+1" and not "_posBase" for placing "Restore last closed file" item at the top of the submenu ? I'd think that _posBase, so that to be aligned with file-menu subentry "RecentFiles ->" ?  
-		I read this: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenua
+		/*
+			`+deltaPosRRCF` below is my add, as well as changing sequence of additions from 1...4, to 0..3
 		*/
-		::InsertMenu(_hMenu, _posBase + 1, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
-		::InsertMenu(_hMenu, _posBase + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
-		::InsertMenu(_hMenu, _posBase + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
-		::InsertMenu(_hMenu, _posBase + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
+		::InsertMenu(_hMenu, _posBase + 0+deltaPosRRCF, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
+		::InsertMenu(_hMenu, _posBase + 1+deltaPosRRCF, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
+		::InsertMenu(_hMenu, _posBase + 2+deltaPosRRCF, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
+		::InsertMenu(_hMenu, _posBase + 3+deltaPosRRCF, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
 
 		_hasSeparators = true;
 	}
@@ -322,7 +409,7 @@ void LastRecentFileList::updateMenu()
 		/*
 		//If no submenu: 
 		 
-		*In file-menu after "print now", have:		
+		*In main-menu after "print now", have:		
 		 -----------------				_posBase-1
 		 -----------------				_posBase
 		 RRCF							_posBase+1
@@ -333,7 +420,7 @@ void LastRecentFileList::updateMenu()
 		 
 		//If submenu: 
 		 
-		*In file-menu after "print now", have:		
+		*In main-menu after "print now", have:		
 		 -----------------				_posBase-1
 		 RecentFiles ->					_posBase
 		 -----------------				_posBase+1
@@ -345,16 +432,16 @@ void LastRecentFileList::updateMenu()
 		 ERFL							_posBase+3
 		 -----------------				_posBase+4		 
 		*/		
-		::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION);//  bar 3 in file-menu; nothing in sub-menu
+		::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION);//  bar 3 in main-menu; nothing in sub-menu
 		::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
 		::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
 		::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-		::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in file-menu ; bar 1 (the only) in sub-menu
+		::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in main-menu ; bar 1 (the only) in sub-menu
 		_hasSeparators = false;
 
 		if (isSubMenuMode())
 		{
-			// Remove bar 2 and "Recent Files" Entry from the file-menu
+			// Remove bar 2 and "Recent Files" Entry from the main-menu
 			::RemoveMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION);
 			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION);
 
