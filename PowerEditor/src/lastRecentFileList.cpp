@@ -75,23 +75,7 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	*/
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%u\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%u\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%u\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%u\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\n");
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%u\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%u\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%u\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	
+	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );	
 }
 
 /*
@@ -307,6 +291,9 @@ void LastRecentFileList::add(const TCHAR *fn)
 	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%u\n", GetMenuItemID(_hMenu, _posBase+3) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%u\n", GetMenuItemID(_hMenu, _posBase+4) );
 	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%u\n", GetMenuItemID(_hMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%u\n", GetMenuItemID(_hMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%u\n", GetMenuItemID(_hMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%u\n", GetMenuItemID(_hMenu, _posBase+8) );
 	printf("\n");
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%u\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -316,6 +303,9 @@ void LastRecentFileList::add(const TCHAR *fn)
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%u\n", GetMenuItemID(_hParentMenu, _posBase+3) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%u\n", GetMenuItemID(_hParentMenu, _posBase+4) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%u\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%u\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%u\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%u\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	
 }
 
