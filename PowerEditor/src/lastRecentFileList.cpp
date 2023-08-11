@@ -429,10 +429,37 @@ void LastRecentFileList::updateMenu()
 			*/
 			deltaPosRRCF=1;
 		}
-		// Now for both modes:
-		/*
-			`+deltaPosRRCF` below is my add, as well as changing sequence of additions from 1...4, to 0..3
+		/*debugs
 		*/
+		printf("\t if(!_hasSeparators && _size > 0), before: Now for both modes:  \n" );	
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+		printf("\n");	
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
+		printf("\n");
+				
+		// Now for both modes:
+		/* `+deltaPosRRCF` below is my add, as well as changing sequence of additions from 1...4, to 0..3 */
 		::InsertMenu(_hMenu, _posBase + 0+deltaPosRRCF, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
 		::InsertMenu(_hMenu, _posBase + 1+deltaPosRRCF, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
 		::InsertMenu(_hMenu, _posBase + 2+deltaPosRRCF, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
@@ -476,6 +503,35 @@ void LastRecentFileList::updateMenu()
 		::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in main-menu ; bar 1 (the only) in sub-menu
 		_hasSeparators = false;
 
+		/*debugs
+		*/
+		printf("\t else if (_hasSeparators && _size == 0), before if (isSubMenuMode()) : \n" );	
+		printf("\t _size=%d\n", _size );
+		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
+		printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+		printf("\n");	
+		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+		printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
+		printf("\n");
+
 		if (isSubMenuMode())
 		{
 			// Remove bar 2 and "Recent Files" Entry from the main-menu
@@ -499,10 +555,38 @@ void LastRecentFileList::updateMenu()
 	Proof: 
 	if _size>0, then it must be that _hasSeparators==true (if it were false, then 1st branch of top-level if above would have made it true ). 
 	But, the only way for _hasSeparators to become true is as a result of that mentioned branch , because it is initialized in initMenu() as false, and there is _no other place_ in this file that changes it to true. 
-	
 	*/
 
 	_pAccelerator->updateFullMenu();
+
+	/*debugs
+	*/
+	printf("\t update() before last 2 for-loops: \n" );	
+	printf("\t _size=%d\n", _size );
+	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
+	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+	printf("\n");	
+	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
+	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
+	printf("\n");
 
 	//Remove all menu recentFiles items
 	for (int i = 0; i < _size; ++i) 
@@ -514,7 +598,7 @@ void LastRecentFileList::updateMenu()
 	{
 		generic_string strBuffer(BuildMenuFileName(nppParam.getRecentFileCustomLength(), j, _lrfl.at(j)._name) );
 		::InsertMenu(_hMenu, _posBase + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
-		/*??
+		/*?
 		In case of sub-menu, how/why (_posBase+j) results in insertion at position after the 2 items: "empty recent files list" and bar, instead of at the top, because (_posBase) is position at the top of the sub-menu ? 
 		
 		According to Note X above , before this for-loop, if _size>0 ( and unless _pAccelerator->updateFullMenu(); does some tricks), in sub-menu have already next 4 items at top: (below I use abbreviations of the menu items)
@@ -528,7 +612,7 @@ void LastRecentFileList::updateMenu()
 	}
 	/*debugs
 	*/
-	// printf("update() at end: \n\n" );	
+	printf("\t update() at end: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
 	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
@@ -558,7 +642,6 @@ void LastRecentFileList::updateMenu()
 	// char lpString[50]; int nchars;
 	// nchars= GetMenuStringA(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
 	// printf("GetMenuStringA(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
-	
 }
 
 /*+
