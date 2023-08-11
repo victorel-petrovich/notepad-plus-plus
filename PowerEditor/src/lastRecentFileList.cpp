@@ -373,7 +373,7 @@ updateMenu() is called in 2 files only in src:
 void LastRecentFileList::updateMenu()
 {
 	printf("updateMenu()\n\n" );
-	int rfh0pos= isSubMenuMode ? 0 : _posBase; // !! for debugs only 
+	int rfh0pos= isSubMenuMode() ? 0 : _posBase; // !! for debugs only 
 
 	NppParameters& nppParam = NppParameters::getInstance();
 	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in main-menu, and, if submenu mode, also in sub-menu
