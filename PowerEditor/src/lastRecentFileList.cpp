@@ -20,7 +20,6 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
-//me added for debug prints; but can use printf() wihtou including anything here. 
 // #include <iostream>
 // using std::cout;
 
@@ -80,7 +79,7 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 	printf("\n");
 }
 
-/*
+/*+
 switchMode is only called once in scr folder: in NppBigSwitch.cpp
 call to switchMode() is followed by call to updateMenu(), defined lower ; 
 calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
@@ -102,7 +101,6 @@ void LastRecentFileList::switchMode()
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
 	/*debugs
-	*/
 	printf("\t before if-else, after removing commands (including filenames)\n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -129,6 +127,7 @@ void LastRecentFileList::switchMode()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
+	*/
 
 	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
 	{	
@@ -189,7 +188,6 @@ void LastRecentFileList::switchMode()
 	Exit						_posBase
 	*/
 	/*debugs
-	*/
 	printf("\t at end: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -216,6 +214,7 @@ void LastRecentFileList::switchMode()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
+	*/
 	
 }
 
@@ -238,7 +237,7 @@ void LastRecentFileList::saveLRFL()
 
 //callers but not callees
 
-/*
+/*+
  add(..) called in:
 - Notepad_plus.cpp , right after initMenu(..), to add RFH files to menu 
 	Line  587
@@ -278,6 +277,7 @@ void LastRecentFileList::add(const TCHAR *fn)
 	updateMenu();
 }
 
+//+
 void LastRecentFileList::remove(const TCHAR *fn) 
 { 
 	int index = find(fn);
@@ -285,7 +285,7 @@ void LastRecentFileList::remove(const TCHAR *fn)
 		remove(index);
 }
 
-/*
+/*+
 called in NppCommands.cpp at:
 case IDM_CLEAN_RECENT_FILE_LIST :
 */
@@ -307,7 +307,7 @@ void LastRecentFileList::clear()
 	updateMenu();
 }
 
-/* 
+/*+ simplified!
 called only in: NppBigSwitch.cpp, at: 
 case NPPM_INTERNAL_SETTING_HISTORY_SIZE:
 */
@@ -316,23 +316,20 @@ void LastRecentFileList::setUserMaxNbLRF(int size)
 	_userMax = size;
 	if (_size > _userMax) 
 	{	//start popping items
-		int toPop = _size-_userMax;
-		while (toPop > 0) 
+		while (_size > _userMax) 
 		{
 			::RemoveMenu(_hMenu, _lrfl.back()._id, MF_BYCOMMAND);
 			setAvailable(_lrfl.back()._id);
 			_lrfl.pop_back();
-			toPop--;
 			_size--;
 		}
 		updateMenu();
-		_size = _userMax;
 	}
 }
 
 //callers and callees 
 
-/*
+/*+
 called by remove(fn) above, and by add(fn) above
 */
 void LastRecentFileList::remove(size_t index) 
@@ -591,7 +588,7 @@ generic_string & LastRecentFileList::getIndex(int index)
 //private methods
 
 /*+
-get index of given filename; if not found => -1
+get index, in _lrfl, of given filename; if not found => -1
 */
 int LastRecentFileList::find(const TCHAR *fn)
 {
