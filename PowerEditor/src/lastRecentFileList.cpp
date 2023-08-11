@@ -373,11 +373,11 @@ updateMenu() is called in 2 files only in src:
 void LastRecentFileList::updateMenu()
 {
 	printf("updateMenu()\n\n" );
+	int rfh0pos= isSubMenuMode ? 0 : _posBase; // !! for debugs only 
 
 	NppParameters& nppParam = NppParameters::getInstance();
 	if (!_hasSeparators && _size > 0)  // add missing RFH menu items: in main-menu, and, if submenu mode, also in sub-menu
 	{	
-		//add separators in the main-menu
 		
 		// preparation of the names for 4 separators items 
 		NativeLangSpeaker *pNativeLangSpeaker = nppParam.getNativeLangSpeaker();
@@ -431,19 +431,18 @@ void LastRecentFileList::updateMenu()
 		}
 		/*debugs
 		*/
-		printf("\t if(!_hasSeparators && _size > 0), before: Now for both modes:  \n" );	
+		printf("\t if(!_hasSeparators && _size > 0), after: if-else on (!isSubMenuMode()):  \n" );	
 		printf("\t _size=%d\n", _size );
 		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos-1)=%d\n", GetMenuItemID(_hMenu, rfh0pos-1) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+0)=%d\n", GetMenuItemID(_hMenu, rfh0pos+0) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+1)=%d\n", GetMenuItemID(_hMenu, rfh0pos+1) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+2)=%d\n", GetMenuItemID(_hMenu, rfh0pos+2) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+3)=%d\n", GetMenuItemID(_hMenu, rfh0pos+3) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+4)=%d\n", GetMenuItemID(_hMenu, rfh0pos+4) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+5)=%d\n", GetMenuItemID(_hMenu, rfh0pos+5) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+6)=%d\n", GetMenuItemID(_hMenu, rfh0pos+6) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+7)=%d\n", GetMenuItemID(_hMenu, rfh0pos+7) );
 		printf("\n");	
 		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -455,7 +454,6 @@ void LastRecentFileList::updateMenu()
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 		printf("\n");
 				
 		// Now for both modes:
@@ -508,16 +506,15 @@ void LastRecentFileList::updateMenu()
 		printf("\t else if (_hasSeparators && _size == 0), before if (isSubMenuMode()) : \n" );	
 		printf("\t _size=%d\n", _size );
 		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-		printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos-1)=%d\n", GetMenuItemID(_hMenu, rfh0pos-1) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+0)=%d\n", GetMenuItemID(_hMenu, rfh0pos+0) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+1)=%d\n", GetMenuItemID(_hMenu, rfh0pos+1) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+2)=%d\n", GetMenuItemID(_hMenu, rfh0pos+2) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+3)=%d\n", GetMenuItemID(_hMenu, rfh0pos+3) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+4)=%d\n", GetMenuItemID(_hMenu, rfh0pos+4) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+5)=%d\n", GetMenuItemID(_hMenu, rfh0pos+5) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+6)=%d\n", GetMenuItemID(_hMenu, rfh0pos+6) );
+		printf("\t GetMenuItemID(_hMenu, rfh0pos+7)=%d\n", GetMenuItemID(_hMenu, rfh0pos+7) );
 		printf("\n");	
 		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -529,7 +526,6 @@ void LastRecentFileList::updateMenu()
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 		printf("\n");
 
 		if (isSubMenuMode())
@@ -561,19 +557,18 @@ void LastRecentFileList::updateMenu()
 
 	/*debugs
 	*/
-	printf("\t update() before last 2 for-loops: \n" );	
+	printf("\t before last 2 for-loops: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos-1)=%d\n", GetMenuItemID(_hMenu, rfh0pos-1) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+0)=%d\n", GetMenuItemID(_hMenu, rfh0pos+0) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+1)=%d\n", GetMenuItemID(_hMenu, rfh0pos+1) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+2)=%d\n", GetMenuItemID(_hMenu, rfh0pos+2) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+3)=%d\n", GetMenuItemID(_hMenu, rfh0pos+3) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+4)=%d\n", GetMenuItemID(_hMenu, rfh0pos+4) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+5)=%d\n", GetMenuItemID(_hMenu, rfh0pos+5) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+6)=%d\n", GetMenuItemID(_hMenu, rfh0pos+6) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+7)=%d\n", GetMenuItemID(_hMenu, rfh0pos+7) );
 	printf("\n");	
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -585,7 +580,6 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
 
 	//Remove all menu recentFiles items
@@ -612,19 +606,18 @@ void LastRecentFileList::updateMenu()
 	}
 	/*debugs
 	*/
-	printf("\t update() at end: \n" );	
+	printf("\t at end: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos-1)=%d\n", GetMenuItemID(_hMenu, rfh0pos-1) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+0)=%d\n", GetMenuItemID(_hMenu, rfh0pos+0) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+1)=%d\n", GetMenuItemID(_hMenu, rfh0pos+1) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+2)=%d\n", GetMenuItemID(_hMenu, rfh0pos+2) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+3)=%d\n", GetMenuItemID(_hMenu, rfh0pos+3) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+4)=%d\n", GetMenuItemID(_hMenu, rfh0pos+4) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+5)=%d\n", GetMenuItemID(_hMenu, rfh0pos+5) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+6)=%d\n", GetMenuItemID(_hMenu, rfh0pos+6) );
+	printf("\t GetMenuItemID(_hMenu, rfh0pos+7)=%d\n", GetMenuItemID(_hMenu, rfh0pos+7) );
 	printf("\n");	
 	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
@@ -636,7 +629,6 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
 	printf("\n");
 	//I tried get string names, but just like w/ GetMenuItemID, only works in main-menu.
 	// char lpString[50]; int nchars;
