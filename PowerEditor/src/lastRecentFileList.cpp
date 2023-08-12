@@ -153,7 +153,8 @@ void LastRecentFileList::switchMode()
 		_hParentMenu = _hMenu;
 		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
 		
-		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line,The new menu created by CreatePopupMenu() is already empty. . Tested both w/ prints of ID and count sub-menu items before and after,as well as tried the app many ways . 
+		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line,The new menu created by CreatePopupMenu() is already empty. . 
+			// Tested both w/ prints of ID and count sub-menu items before and after,as well as tried the app many ways . 
 	}
 	else // mode sub-menu ; _hMenu points to sub-menu; _hParentMenu points to main-menu (file menu)
 	{
@@ -401,7 +402,7 @@ void LastRecentFileList::updateMenu()
 		::InsertMenu(_hMenu, hmenuRFHpos + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
 		::InsertMenu(_hMenu, hmenuRFHpos + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
 		
-		if (!isSubMenuMode)
+		if (!isSubMenuMode())
 		{
 			::InsertMenu(_hMenu, hmenuRFHpos + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0); // a separator
 		}
@@ -451,7 +452,7 @@ void LastRecentFileList::updateMenu()
 		// ::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
 		// ::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 		// ::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in main-menu ; nothing in sub-menu 
-		if (!isSubMenuMode)
+		if (!isSubMenuMode())
 		{
 			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION); // the last extra separator
 		}
