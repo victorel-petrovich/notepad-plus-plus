@@ -92,34 +92,6 @@ void LastRecentFileList::switchMode()
 	{
 		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 	}
-	/*debugs
-	printf("\t before if-else, after removing commands (including filenames)\n" );	
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
-	printf("\n");	
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
-	printf("\n");
-	*/
 
 	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
 	{	
@@ -132,8 +104,7 @@ void LastRecentFileList::switchMode()
 		-----------------			_posBase-1
 		-----------------			_posBase
 		-----------------			_posBase+1
-		Exit						_posBase+2
-		
+		Exit						_posBase+2		
 		*/
 		if (_size > 0) // remove 2 separators
 		{
@@ -180,35 +151,6 @@ void LastRecentFileList::switchMode()
 	-----------------			_posBase-1
 	Exit						_posBase
 	*/
-	/*debugs
-	printf("\t at end: \n" );	
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, _posBase-1)=%d\n", GetMenuItemID(_hMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+0)=%d\n", GetMenuItemID(_hMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+1)=%d\n", GetMenuItemID(_hMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+2)=%d\n", GetMenuItemID(_hMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+3)=%d\n", GetMenuItemID(_hMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+4)=%d\n", GetMenuItemID(_hMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+5)=%d\n", GetMenuItemID(_hMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+6)=%d\n", GetMenuItemID(_hMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+7)=%d\n", GetMenuItemID(_hMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hMenu, _posBase+8)=%d\n", GetMenuItemID(_hMenu, _posBase+8) );
-	printf("\n");	
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+8)=%d\n", GetMenuItemID(_hParentMenu, _posBase+8) );
-	printf("\n");
-	*/
-	
 }
 
 /*
@@ -373,7 +315,10 @@ void LastRecentFileList::updateMenu()
 		else
 		{			
 			::InsertMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION | MF_POPUP, reinterpret_cast<UINT_PTR>(_hMenu), (LPCTSTR)recentFileList.c_str());
-			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
+			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, IDM_FILE_RESTORELASTCLOSEDFILE, openRecentClosedFile.c_str());
+			::InsertMenu(_hParentMenu, _posBase + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
+			::InsertMenu(_hParentMenu, _posBase + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
+			::InsertMenu(_hParentMenu, _posBase + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
 		}
 		/*debugs
 		printf("\t if(!_hasSeparators && _size > 0), after: if-else on (!isSubMenuMode()):  \n" );	
@@ -409,16 +354,19 @@ void LastRecentFileList::updateMenu()
 
 		if (!isSubMenuMode())
 		{
-			::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // separator
-			::RemoveMenu(_hMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
-			::RemoveMenu(_hMenu, _posBase + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
-			::RemoveMenu(_hMenu, _posBase + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
 			::RemoveMenu(_hMenu, _posBase + 4, MF_BYPOSITION); // the last extra separator
+			::RemoveMenu(_hMenu, _posBase + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
+			::RemoveMenu(_hMenu, _posBase + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
+			::RemoveMenu(_hMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
+			::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // separator
 		}
 		else
 		{			
-			::RemoveMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION); // a separator 
-			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION); // the "Recent Files" Entry 
+			::RemoveMenu(_hParentMenu, _posBase + 4, MF_BYPOSITION); // the last extra separator
+			::RemoveMenu(_hParentMenu, _posBase + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
+			::RemoveMenu(_hParentMenu, _posBase + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
+			::RemoveMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
+			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION); // "Recent Files->"
 		}
 		
 		_hasSeparators = false;
