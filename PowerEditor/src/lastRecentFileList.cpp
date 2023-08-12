@@ -85,9 +85,7 @@ void LastRecentFileList::switchMode()
 }
 
 void LastRecentFileList::add(const TCHAR *fn) 
-{
-	printf("add()\n\n" );
-	
+{	
 	if (_userMax == 0 || _locked)
 		return;
 
@@ -122,9 +120,7 @@ void LastRecentFileList::remove(const TCHAR *fn)
 		remove(index);
 }
 void LastRecentFileList::remove(size_t index) 
-{
-	printf("remove(size_t index)\n\n" );
-	
+{	
 	if (_size == 0 || _locked)
 		return;
 	if (index < _lrfl.size())
@@ -139,9 +135,7 @@ void LastRecentFileList::remove(size_t index)
 }
 
 void LastRecentFileList::clear() 
-{
-	printf("clear()\n\n" );
-	
+{	
 	if (_size == 0)
 		return;
 
