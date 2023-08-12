@@ -83,17 +83,24 @@ void LastRecentFileList::switchMode()
 {
 	printf("switchMode()\n\n");
 	
-	//Remove all recent file history menu items that are commands (including recent files )
-	::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-	::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
-	::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
-
-	for (int i = 0; i < _size; ++i)
+	if (_size > 0) // remove all RFH (recent file history) menu items
 	{
-		::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
-	}
+		for (int i = 0; i < _size; ++i) // remove recent files 
+		{
+			::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
+		}
+	
+		HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
+		
+		::RemoveMenu(_hMainMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
+		::RemoveMenu(_hMainMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
+		::RemoveMenu(_hMainMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
+		// remove either 2 separators or "RecentFiles ->" and 1 separator
+		::RemoveMenu(_hMainMenu, _posBase, MF_BYPOSITION); // the first removal makes the next separator take position _posBase
+		::RemoveMenu(_hMainMenu, _posBase, MF_BYPOSITION);
+	}		
 
-	if (_hParentMenu == NULL) // mode main menu (recent files - also in main-menu); thus _hMenu points to main-menu
+	if (_hParentMenu == NULL) // mode main menu (all Recent File History (RFH) items are in main-menu); thus _hMenu points to main-menu
 	{	
 		/*
 		// If _lrfl was empty, then in main-menu after "print now", should have:		
@@ -106,12 +113,6 @@ void LastRecentFileList::switchMode()
 		-----------------			_posBase+1
 		Exit						_posBase+2		
 		*/
-		if (_size > 0) // remove 2 separators
-		{
-			// the first removal below makes the next bar take position _posBase
-			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
-			::RemoveMenu(_hMenu, _posBase, MF_BYPOSITION);
-		}		
 		// switch to sub-menu mode
 		_hParentMenu = _hMenu;
 		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
@@ -131,20 +132,12 @@ void LastRecentFileList::switchMode()
 		RecentFiles ->				_posBase
 		-----------------			_posBase+1
 		Exit						_posBase+2
-		*/
-		
-		if (_size > 0)//remove "RecentFiles ->" and 1 separator
-		{
-			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
-			::RemoveMenu(_hParentMenu, _posBase, MF_BYPOSITION);
-		}
+		*/		
 		// switch to main menu mode
 		::DestroyMenu(_hMenu);
 		_hMenu = _hParentMenu;
 		_hParentMenu = NULL;
-
 	}
-
 	_hasSeparators = false; // by "separators" here it's meant _extra_ separator items between: the separator after Print-now, and Exit.
 	/*
 	Now in main-menu after "Print now", have:		
@@ -354,7 +347,7 @@ void LastRecentFileList::updateMenu()
 		::RemoveMenu(hMainMenu, _posBase + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
 		::RemoveMenu(hMainMenu, _posBase + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
 		::RemoveMenu(hMainMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
-		::RemoveMenu(hMainMenu, _posBase + 0, MF_BYPOSITION); // separator
+		::RemoveMenu(hMainMenu, _posBase + 0, MF_BYPOSITION); // separator or "RecentFiles->" entry
 		
 		_hasSeparators = false;
 
