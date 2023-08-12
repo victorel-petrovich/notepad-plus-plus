@@ -92,12 +92,12 @@ void LastRecentFileList::switchMode()
 	
 		HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
 		
-		::RemoveMenu(_hMainMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-		::RemoveMenu(_hMainMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
-		::RemoveMenu(_hMainMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
+		::RemoveMenu(hMainMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
+		::RemoveMenu(hMainMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
+		::RemoveMenu(hMainMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
 		// remove either 2 separators or "RecentFiles ->" and 1 separator
-		::RemoveMenu(_hMainMenu, _posBase, MF_BYPOSITION); // the first removal makes the next separator take position _posBase
-		::RemoveMenu(_hMainMenu, _posBase, MF_BYPOSITION);
+		::RemoveMenu(hMainMenu, _posBase, MF_BYPOSITION); // the first removal makes the next separator take position _posBase
+		::RemoveMenu(hMainMenu, _posBase, MF_BYPOSITION);
 	}		
 
 	if (_hParentMenu == NULL) // mode main menu (all Recent File History (RFH) items are in main-menu); thus _hMenu points to main-menu
