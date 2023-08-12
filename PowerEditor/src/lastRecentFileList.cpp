@@ -441,20 +441,20 @@ void LastRecentFileList::updateMenu()
 
 		_hasSeparators = true;
 	}
-	else if (_hasSeparators && _size == 0) 	//remove RFH menu items  
+	else if (_hasSeparators && _size == 0) 	//remove RFH menu items (files in menu already gone)
 	// ex, after clear(), and possibly after remove(), setUserMaxNbLRF()
 	{
 		::RemoveMenu(_hMenu, hmenuRFHpos + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
 		::RemoveMenu(_hMenu, hmenuRFHpos + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
 		::RemoveMenu(_hMenu, hmenuRFHpos + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
-		::RemoveMenu(_hMenu, hmenuRFHpos + 0, MF_BYPOSITION); // separator
+		::RemoveMenu(_hMenu, hmenuRFHpos + 0, MF_BYPOSITION); // separator at top
 		// ::RemoveMenu(_hMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
 		// ::RemoveMenu(_hMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
 		// ::RemoveMenu(_hMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
 		// ::RemoveMenu(_hMenu, _posBase + 0, MF_BYPOSITION); // bar 2 in main-menu ; nothing in sub-menu 
 		if (!isSubMenuMode())
 		{
-			::RemoveMenu(_hParentMenu, _posBase + 0, MF_BYPOSITION); // the last extra separator
+			::RemoveMenu(_hMenu, hmenuRFHpos + 0, MF_BYPOSITION); // the last extra separator
 		}
 		else
 		{			
