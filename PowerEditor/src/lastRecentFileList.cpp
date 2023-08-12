@@ -376,7 +376,6 @@ void LastRecentFileList::updateMenu()
 			::InsertMenu(_hParentMenu, _posBase + 1, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
 		}
 		/*debugs
-		*/
 		printf("\t if(!_hasSeparators && _size > 0), after: if-else on (!isSubMenuMode()):  \n" );	
 		printf("\t _size=%d\n", _size );
 		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -401,6 +400,7 @@ void LastRecentFileList::updateMenu()
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 		printf("\n");
+		*/
 				
 		_hasSeparators = true;
 	}
@@ -424,7 +424,6 @@ void LastRecentFileList::updateMenu()
 		_hasSeparators = false;
 
 		/*debugs
-		*/
 		printf("\t else if (_hasSeparators && _size == 0), before if (isSubMenuMode()) : \n" );	
 		printf("\t _size=%d\n", _size );
 		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -449,13 +448,13 @@ void LastRecentFileList::updateMenu()
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 		printf("\n");
+		*/
 
 	}
 
 	_pAccelerator->updateFullMenu();
 
 	/*debugs
-	*/
 	printf("\t before last 2 for-loops: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -480,6 +479,7 @@ void LastRecentFileList::updateMenu()
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
 	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
 	printf("\n");
+	*/
 
 	//Remove all menu recentFiles items
 	for (int i = 0; i < _size; ++i) 
@@ -491,10 +491,9 @@ void LastRecentFileList::updateMenu()
 	for (int j = 0; j < _size; ++j)
 	{
 		generic_string strBuffer(BuildMenuFileName(nppParam.getRecentFileCustomLength(), j, _lrfl.at(j)._name) );
-		::InsertMenu(_hMenu, hmenuRFHpos + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
+		::InsertMenu(_hMenu, hmenuRFpos + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
 	}
 	/*debugs
-	*/
 	printf("\t at end: \n" );	
 	printf("\t _size=%d\n", _size );
 	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
@@ -523,6 +522,7 @@ void LastRecentFileList::updateMenu()
 	// char lpString[50]; int nchars;
 	// nchars= GetMenuStringA(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
 	// printf("GetMenuStringA(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
+	*/
 }
 
 
