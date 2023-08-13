@@ -22,9 +22,6 @@
 
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
-	printStr(TEXT("THE ANSWER..."));
-	printInt(42);
-	printStr(TEXT("let's try several lines \n second line \n third line \n and a longher line asdf asdfl jkas;jasdjkasljk asljkdf a end of the line \n") );
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
@@ -46,7 +43,10 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 }
 
 void LastRecentFileList::switchMode()
-{	
+{
+	printStr(TEXT("THE ANSWER..."));
+	printInt(42);
+	printStr(TEXT("let's try several lines \n second line \n third line \n and a longher line asdf asdfl jkas;jasdjkasljk asljkdf a end of the line \n") );
 	if (_size > 0) // remove all RFH (recent file history) menu items
 	{
 		// remove recent files ; must be done before removing the other RFH items below, b/c the latter - by position as chosen
