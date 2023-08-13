@@ -46,6 +46,11 @@ void LastRecentFileList::switchMode()
 {	
 	if (_size > 0) // remove all RFH (recent file history) menu items
 	{
+		// remove recent files ; must be done before removing the other RFH items below, b/c the latter - by position as chosen
+		for (int i = 0; i < _size; ++i) 
+		{
+			::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
+		}
 		HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
 
 		::RemoveMenu(hMainMenu, _posBase + 4, MF_BYPOSITION); // the last extra separator, before Exit item
@@ -54,10 +59,6 @@ void LastRecentFileList::switchMode()
 		::RemoveMenu(hMainMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
 		::RemoveMenu(hMainMenu, _posBase + 0, MF_BYPOSITION); // separator or "RecentFiles->" entry
 
-		for (int i = 0; i < _size; ++i) // remove recent files 
-		{
-			::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
-		}
 		/*
 		 in main-menu after "print now", should have:		
 		-----------------			_posBase-1
