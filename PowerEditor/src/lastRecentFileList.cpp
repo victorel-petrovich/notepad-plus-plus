@@ -20,30 +20,8 @@
 #include "menuCmdID.h"
 #include "localization.h"
 
-/*
-  initMenu(..), of class LastRecentFileList, is only called once in src folder: in Notepad_plus.cpp, inside init(...), line 580:
- _lastRecentFileList.initMenu(hFileMenu, IDM_FILEMENU_LASTONE + 1, IDM_FILEMENU_EXISTCMDPOSITION, &_accelerator, nppParam.putRecentFileInSubMenu());
-	and is followed by calls to add() (from this file) to add RFH file items to menu 
-	
- see  menuCmdID.h  
- IDM_FILE_EXIT=41011 (the id) 
- IDM_FILEMENU_LASTONE + 1 = 41026 (first id to be given for a recent filename)
- * at line: 
-	// 0 based position of command "Exit"
- IDM_FILEMENU_EXISTCMDPOSITION = 22
- also see what what positions, relative to 0 at top, should be when _lrfl is empty (_lrfl is the internal list of recent files)
-*/
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
-	//me added for debug prints
-	AllocConsole();
-	freopen("conin$","r",stdin);
-	freopen("conout$","w",stdout);
-	freopen("conout$","w",stderr);
-	//-----------------------------
-
-	printf("initMenu()\n\n" );
-	
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
@@ -62,103 +40,49 @@ void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelera
 
 	for (size_t i = 0 ; i < sizeof(_idFreeArray) ; ++i)
 		_idFreeArray[i] = true;
-	
-	/*debugs
-	*/
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );	
-	printf("\n");
 }
 
-/*
-switchMode is only called once in scr folder: in NppBigSwitch.cpp
-call to switchMode() is followed by call to updateMenu(), defined lower ; 
-calls done at: case NPPM_INTERNAL_RECENTFILELIST_SWITCH
-
-TODO: call updateMenu() inside switchMode(), at end, and remove call in NppBigSwitch.cpp, 
-	to be same as with the other 4 functions in current file. 
-*/
 void LastRecentFileList::switchMode()
-{
-	printf("switchMode()\n\n");
-	
+{	
 	if (_size > 0) // remove all RFH (recent file history) menu items
 	{
+		HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
+
+		::RemoveMenu(hMainMenu, _posBase + 4, MF_BYPOSITION); // the last extra separator, before Exit item
+		::RemoveMenu(hMainMenu, _posBase + 3, MF_BYPOSITION); // IDM_CLEAN_RECENT_FILE_LIST
+		::RemoveMenu(hMainMenu, _posBase + 2, MF_BYPOSITION); // IDM_OPEN_ALL_RECENT_FILE
+		::RemoveMenu(hMainMenu, _posBase + 1, MF_BYPOSITION); // IDM_FILE_RESTORELASTCLOSEDFILE
+		::RemoveMenu(hMainMenu, _posBase + 0, MF_BYPOSITION); // separator or "RecentFiles->" entry
+
 		for (int i = 0; i < _size; ++i) // remove recent files 
 		{
 			::RemoveMenu(_hMenu, _lrfl.at(i)._id, MF_BYCOMMAND);
 		}
-	
-		HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
-		
-		::RemoveMenu(hMainMenu, IDM_FILE_RESTORELASTCLOSEDFILE, MF_BYCOMMAND);
-		::RemoveMenu(hMainMenu, IDM_OPEN_ALL_RECENT_FILE, MF_BYCOMMAND);
-		::RemoveMenu(hMainMenu, IDM_CLEAN_RECENT_FILE_LIST, MF_BYCOMMAND);
-		// remove either 2 separators or "RecentFiles ->" and 1 separator
-		::RemoveMenu(hMainMenu, _posBase, MF_BYPOSITION); // the first removal makes the next separator take position _posBase
-		::RemoveMenu(hMainMenu, _posBase, MF_BYPOSITION);
+		/*
+		 in main-menu after "print now", should have:		
+		-----------------			_posBase-1
+		Exit						_posBase
+		*/
 	}		
 
 	if (_hParentMenu == NULL) // mode main menu (all Recent File History (RFH) items are in main-menu); thus _hMenu points to main-menu
 	{	
-		/*
-		// If _lrfl was empty, then in main-menu after "print now", should have:		
-		-----------------			_posBase-1
-		Exit						_posBase
-		
-		// If _lrfl was not empty, then have:
-		-----------------			_posBase-1
-		-----------------			_posBase
-		-----------------			_posBase+1
-		Exit						_posBase+2		
-		*/
 		// switch to sub-menu mode
 		_hParentMenu = _hMenu;
 		_hMenu = ::CreatePopupMenu(); //  in updateMenu(), this _hMenu will be attached to the hParentMenu(main-menu) at _posBase, and populated
-		
-		// ::RemoveMenu(_hMenu, _posBase+1, MF_BYPOSITION);  //  redundant line,The new menu created by CreatePopupMenu() is already empty. . 
-			// Tested both w/ prints of ID and count sub-menu items before and after,as well as tried the app many ways . 
 	}
 	else // mode sub-menu ; _hMenu points to sub-menu; _hParentMenu points to main-menu (file menu)
 	{
-		/*
-		// If _lrfl was empty, then in main-menu after "print now", should have:		
-		-----------------			_posBase-1
-		Exit						_posBase
-		
-		// If _lrfl was not empty, then should have:
-		-----------------			_posBase-1
-		RecentFiles ->				_posBase
-		-----------------			_posBase+1
-		Exit						_posBase+2
-		*/		
 		// switch to main menu mode
 		::DestroyMenu(_hMenu);
 		_hMenu = _hParentMenu;
 		_hParentMenu = NULL;
 	}
 	_hasSeparators = false; // by "separators" here it's meant _extra_ separator items between: the separator after Print-now, and Exit.
-	/*
-	Now in main-menu after "Print now", have:		
-	-----------------			_posBase-1
-	Exit						_posBase
-	*/
 }
 
-/*
- add(..) called in:
-- Notepad_plus.cpp , right after initMenu(..), to add RFH files to menu 
-	Line  587
-- NppIO.cpp:
-	- at closing a doc(tab): Line  830
-	- in fileSaveAs(..) Line 1812
-	
-*/
 void LastRecentFileList::add(const TCHAR *fn) 
-{
-	printf("add()\n\n" );
-	
+{	
 	if (_userMax == 0 || _locked)
 		return;
 
@@ -192,13 +116,8 @@ void LastRecentFileList::remove(const TCHAR *fn)
 	if (index != -1)
 		remove(index);
 }
-/*
-called by remove(fn) above, and by add(fn) above
-*/
 void LastRecentFileList::remove(size_t index) 
-{
-	printf("remove(size_t index)\n\n" );
-	
+{	
 	if (_size == 0 || _locked)
 		return;
 	if (index < _lrfl.size())
@@ -212,14 +131,8 @@ void LastRecentFileList::remove(size_t index)
 	}
 }
 
-/*
-called in NppCommands.cpp at:
-case IDM_CLEAN_RECENT_FILE_LIST :
-*/
 void LastRecentFileList::clear() 
 {
-	printf("clear()\n\n" );
-	
 	if (_size == 0)
 		return;
 
@@ -234,10 +147,6 @@ void LastRecentFileList::clear()
 	updateMenu();
 }
 
-/* simplified!
-called only in: NppBigSwitch.cpp, at: 
-case NPPM_INTERNAL_SETTING_HISTORY_SIZE:
-*/
 void LastRecentFileList::setUserMaxNbLRF(int size)
 {
 	_userMax = size;
@@ -254,28 +163,8 @@ void LastRecentFileList::setUserMaxNbLRF(int size)
 	}
 }
 
-/*
-updateMenu() has 3 main functions:
-- add missing LRFL menu items (when _size>0) 
-- remove unnecessary LRFL menu items (when _size==0)
-- update updates the menu filenames based on current _lrfl
-
-updateMenu() is called in 2 files only in src:
-- in NppBigSwitch.cpp in process(...), switch(message):
-	case NPPM_INTERNAL_RECENTFILELIST_UPDATE:
-		call to updateMenu() alone
-	case NPPM_INTERNAL_RECENTFILELIST_SWITCH:
-		call to switchMode() is followed by call to updateMenu();  
-- in current file, in 4 places:
-	LastRecentFileList::add(const TCHAR *fn) 
-	LastRecentFileList::remove(size_t index) 
-	LastRecentFileList::clear()
-	LastRecentFileList::setUserMaxNbLRF(int size)
-*/
 void LastRecentFileList::updateMenu()
 {
-	printf("updateMenu()\n\n" );
-
 	NppParameters& nppParam = NppParameters::getInstance();
 
 	HMENU hMainMenu = isSubMenuMode() ? _hParentMenu : _hMenu;
@@ -312,33 +201,7 @@ void LastRecentFileList::updateMenu()
 		::InsertMenu(hMainMenu, _posBase + 2, MF_BYPOSITION, IDM_OPEN_ALL_RECENT_FILE, openAllFiles.c_str());
 		::InsertMenu(hMainMenu, _posBase + 3, MF_BYPOSITION, IDM_CLEAN_RECENT_FILE_LIST, cleanFileList.c_str());
 		::InsertMenu(hMainMenu, _posBase + 4, MF_BYPOSITION, static_cast<UINT_PTR>(-1), 0);
-		/*debugs
-		printf("\t if(!_hasSeparators && _size > 0), after: if-else on (!isSubMenuMode()):  \n" );	
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos-1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos-1) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+0)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+0) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+1) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+2)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+2) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+3)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+3) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+4)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+4) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+5)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+5) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+6)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+6) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+7)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+7) );
-		printf("\n");	
-		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-		printf("\n");
-		*/
-				
+
 		_hasSeparators = true;
 	}
 	else if (_hasSeparators && _size == 0) 	//remove RFH menu items (files from menu already gone). Ex, after clear(), and possibly after remove(), setUserMaxNbLRF()
@@ -351,62 +214,8 @@ void LastRecentFileList::updateMenu()
 		
 		_hasSeparators = false;
 
-		/*debugs
-		printf("\t else if (_hasSeparators && _size == 0), before if (isSubMenuMode()) : \n" );	
-		printf("\t _size=%d\n", _size );
-		printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos-1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos-1) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+0)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+0) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+1) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+2)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+2) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+3)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+3) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+4)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+4) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+5)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+5) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+6)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+6) );
-		printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+7)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+7) );
-		printf("\n");	
-		printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-		printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-		printf("\n");
-		*/
-
 	}
 	_pAccelerator->updateFullMenu();
-
-	/*debugs
-	printf("\t before last 2 for-loops: \n" );	
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos-1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos-1) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+0)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+0) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+1) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+2)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+2) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+3)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+3) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+4)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+4) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+5)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+5) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+6)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+6) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+7)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+7) );
-	printf("\n");	
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\n");
-	*/
 
 	//Remove all menu recentFiles items
 	for (int i = 0; i < _size; ++i) 
@@ -420,36 +229,6 @@ void LastRecentFileList::updateMenu()
 		generic_string strBuffer(BuildMenuFileName(nppParam.getRecentFileCustomLength(), j, _lrfl.at(j)._name) );
 		::InsertMenu(_hMenu, hmenuRFpos + j, MF_BYPOSITION, _lrfl.at(j)._id, strBuffer.c_str());
 	}
-	/*debugs
-	printf("\t at end: \n" );	
-	printf("\t _size=%d\n", _size );
-	printf("\t GetMenuItemCount(_hMenu )=%d\n", GetMenuItemCount(_hMenu ) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos-1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos-1) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+0)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+0) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+1)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+1) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+2)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+2) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+3)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+3) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+4)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+4) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+5)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+5) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+6)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+6) );
-	printf("\t GetMenuItemID(_hMenu, hmenuRFHpos+7)=%d\n", GetMenuItemID(_hMenu, hmenuRFHpos+7) );
-	printf("\n");	
-	printf("\t GetMenuItemCount(_hParentMenu )=%d\n", GetMenuItemCount(_hParentMenu ) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase-1)=%d\n", GetMenuItemID(_hParentMenu, _posBase-1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+0)=%d\n", GetMenuItemID(_hParentMenu, _posBase+0) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+1)=%d\n", GetMenuItemID(_hParentMenu, _posBase+1) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+2)=%d\n", GetMenuItemID(_hParentMenu, _posBase+2) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+3)=%d\n", GetMenuItemID(_hParentMenu, _posBase+3) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+4)=%d\n", GetMenuItemID(_hParentMenu, _posBase+4) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+5)=%d\n", GetMenuItemID(_hParentMenu, _posBase+5) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+6)=%d\n", GetMenuItemID(_hParentMenu, _posBase+6) );
-	printf("\t GetMenuItemID(_hParentMenu, _posBase+7)=%d\n", GetMenuItemID(_hParentMenu, _posBase+7) );
-	printf("\n");
-	//I tried get string names, but just like w/ GetMenuItemID, only works in main-menu.
-	// char lpString[50]; int nchars;
-	// nchars= GetMenuStringA(_hMenu, _posBase-1, lpString,  49,  MF_BYPOSITION);
-	// printf("GetMenuStringA(_hMenu, _posBase-1,...)=%s; nchars=%d\n", lpString, nchars);
-	*/
 }
 
 
@@ -479,10 +258,6 @@ generic_string & LastRecentFileList::getIndex(int index)
 	return _lrfl.at(index)._name;
 }
 
-/* 
-called only in: NppBigSwitch.cpp, at: 
-	case WM_CLOSE:
-*/
 void LastRecentFileList::saveLRFL()
 {
 	NppParameters& nppParams = NppParameters::getInstance();
