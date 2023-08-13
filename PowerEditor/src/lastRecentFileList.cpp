@@ -22,6 +22,9 @@
 
 void LastRecentFileList::initMenu(HMENU hMenu, int idBase, int posBase, Accelerator *pAccelerator, bool doSubMenu)
 {
+	printStr("THE ANSWER...");
+	printInt(42);
+	printStr("let's try several lines \n second line \n third line \n and a longher line asdf asdfl jkas;jasdjkasljk asljkdf a end of the line \n);
 	if (doSubMenu)
 	{
 		_hParentMenu = hMenu;
