@@ -25,7 +25,7 @@ environment:
       # platform: x86_64
 
 configuration:
-    - Release
+    #- Release
     - Debug
 
 before_build:
