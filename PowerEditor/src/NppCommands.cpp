@@ -1994,12 +1994,7 @@ void Notepad_plus::command(int id)
 		case IDM_EDIT_CLEARREADONLY:
 		{
 			Buffer * buf = _pEditView->getCurrentBuffer();
-
-			DWORD dwFileAttribs = ::GetFileAttributes(buf->getFullPathName());
-			dwFileAttribs &= ~FILE_ATTRIBUTE_READONLY;
-
-			::SetFileAttributes(buf->getFullPathName(), dwFileAttribs);
-			buf->setFileReadOnly(false);
+			removeReadOnlyFlagFromFileAttributes(buf->getFullPathName());
 		}
 		break;
 
@@ -3486,7 +3481,7 @@ void Notepad_plus::command(int id)
 					else
 					{
 						param = TEXT("-verbose -v");
-						param += VERSION_VALUE;
+						param += VERSION_INTERNAL_VALUE;
 						int archType = NppParameters::getInstance().archType();
 						if (archType == IMAGE_FILE_MACHINE_AMD64)
 						{
