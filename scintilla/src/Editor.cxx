@@ -4000,8 +4000,9 @@ int Editor::KeyCommand(Message iMessage) {
 	case Message::LineCopy: {
 			const Sci::Line lineStart = pdoc->SciLineFromPosition(SelectionStart().Position());
 			const Sci::Line lineEnd = pdoc->SciLineFromPosition(SelectionEnd().Position());
-			CopyRangeToClipboard(pdoc->LineStart(lineStart),
-				pdoc->LineStart(lineEnd + 1));
+			const Sci::Position start = pdoc->LineStart(lineStart);
+			const Sci::Position end = pdoc->LineStart(lineEnd + 1);
+			CopyRangeToClipboard(start, end);
 		}
 		break;
 	case Message::LineCut: {
@@ -4015,9 +4016,10 @@ int Editor::KeyCommand(Message iMessage) {
 		}
 		break;
 	case Message::LineDelete: {
-			const Sci::Line line = pdoc->SciLineFromPosition(sel.MainCaret());
-			const Sci::Position start = pdoc->LineStart(line);
-			const Sci::Position end = pdoc->LineStart(line + 1);
+			const Sci::Line lineStart = pdoc->SciLineFromPosition(SelectionStart().Position());
+			const Sci::Line lineEnd = pdoc->SciLineFromPosition(SelectionEnd().Position());
+			const Sci::Position start = pdoc->LineStart(lineStart);
+			const Sci::Position end = pdoc->LineStart(lineEnd + 1);
 			pdoc->DeleteChars(start, end - start);
 		}
 		break;
